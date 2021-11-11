@@ -1,5 +1,7 @@
 #ISIS1225 - Librerias de soporte
 
+Ana Sofía Villa Benavides,201923361, as.villa@uniandes.edu.co 
+Daniela Alejandra Camacho Molano,202110974, d.camachom@uniandes.edu.co
 Este proyecto contiene los Tipos abstractos de datos, estructuras de datos y algoritmos requeridos por el curso ISIS1225-Estructuras de Datos y Algoritmos
 
 -Lib
