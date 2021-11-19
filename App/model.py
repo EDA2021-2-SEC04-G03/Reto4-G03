@@ -27,7 +27,8 @@
 
 import config as cf
 from DISClib.ADT import list as lt
-from DISClib.ADT import map as mp
+from DISClib.ADT.graph import gr
+from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
@@ -38,6 +39,36 @@ los mismos.
 """
 
 # Construccion de modelos
+def newAnalyzer():
+    """ Inicializa el analizador
+
+   stops: Tabla de hash para guardar los vertices del grafo
+   connections: Grafo para representar las rutas entre estaciones
+   components: Almacena la informacion de los componentes conectados
+   paths: Estructura que almancena los caminos de costo minimo desde un
+           vertice determinado a todos los otros vértices del grafo
+    """
+    analyzer = {
+                    'aeropuertos': None,
+                    'digrafo conecciones': None,
+                    'grafo conecciones':None,
+                    'components': None,
+                    'paths': None
+                    }
+
+    analyzer['aeropuertos'] = m.newMap(numelements=15000,
+                                     maptype='PROBING',
+                                     comparefunction=compareIATA)
+
+    analyzer['digrafo conecciones'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=100000,
+                                              comparefunction=compareIATA)
+    analyzer['grafo conecciones'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=False,
+                                              size=100000,
+                                              comparefunction=compareIATA)
+    return analyzer
 
 # Funciones para agregar informacion al catalogo
 
@@ -46,5 +77,17 @@ los mismos.
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def compareIATA(IATA, keyIATA):
+    """
+    Compara dos estaciones
+    """
+    IATAcode = keyIATA['key']
+    if (IATA == IATAcode):
+        return 0
+    elif (IATA > IATAcode):
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento

@@ -33,6 +33,9 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+archivoAeropuertos = 'airports_full.csv'
+arrchivoRutas='routes_full.csv'
+archivoCiudades='worldcities_full.csv'
 
 def printMenu():
     print("Bienvenido")
@@ -40,6 +43,8 @@ def printMenu():
     print("2- ")
 
 catalog = None
+
+
 
 """
 Menu principal
