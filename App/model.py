@@ -71,8 +71,51 @@ def newAnalyzer():
     return analyzer
 
 # Funciones para agregar informacion al catalogo
+def addStopConnection(analyzer, lastservice, service):
+    """
+    Adiciona las estaciones al grafo como vertices y arcos entre las
+    estaciones adyacentes.
+
+    Los vertices tienen por nombre el identificador de la estacion
+    seguido de la ruta que sirve.  Por ejemplo:
+
+    75009-10
+
+    Si la estacion sirve otra ruta, se tiene: 75009-101
+    """
+    
+    origin = formatVertex(lastservice)
+    destination = formatVertex(service)
+    cleanServiceDistance(lastservice, service)
+    distance = float(service['Distance']) - float(lastservice['Distance'])
+    distance = abs(distance)
+    addStop(analyzer, origin)
+    addStop(analyzer, destination)
+    addConnection(analyzer, origin, destination, distance)
+    addRouteStop(analyzer, service)
+    addRouteStop(analyzer, lastservice)
+    return analyzer
 
 # Funciones para creacion de datos
+def formatVertex(service):
+    """
+    Se formatea el nombrer del vertice con el id de la estación
+    seguido de la ruta.
+    """
+    name = service['Destination'] + '-'
+    name = name + service['Airline']
+    return name
+ 
+def cleanServiceDistance(lastservice, service):
+    """
+    En caso de que el archivo tenga un espacio en la
+    distancia, se reemplaza con cero.
+    """
+    if service['distance_km'] == '':
+        service['distance_km'] = 0
+    if lastservice['distance_km'] == '':
+        lastservice['distance_km'] = 0
+
 
 # Funciones de consulta
 

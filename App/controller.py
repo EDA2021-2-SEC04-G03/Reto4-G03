@@ -49,17 +49,16 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
     addRouteConnection crea conexiones entre diferentes rutas
     servidas en una misma estación.
     """
-    aeropuertosFile = cf.data_dir + archivoAeropuertos
+    rutasFile = cf.data_dir + archivoRutas
     
-    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+    input_file = csv.DictReader(open(rutasFile, encoding="utf-8"),
                                 delimiter=",")
     lastservice = None
     for service in input_file:
         if lastservice is not None:
-            sameservice = lastservice['ServiceNo'] == service['ServiceNo']
-            samedirection = lastservice['Direction'] == service['Direction']
-            samebusStop = lastservice['BusStopCode'] == service['BusStopCode']
-            if sameservice and samedirection and not samebusStop:
+            samedeparture = lastservice['Departure'] == service['Departure']
+            samedestination = lastservice['Destination'] == service['Destination']
+            if samedeparture and  not samedestination:
                 model.addStopConnection(analyzer, lastservice, service)
         lastservice = service
     model.addRouteConnections(analyzer)
