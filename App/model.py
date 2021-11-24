@@ -96,6 +96,24 @@ def addStopConnection(analyzer, lastservice, service):
     addRouteStop(analyzer, lastservice)
     return analyzer
 
+def addRouteConnections(analyzer):
+    """
+    Por cada vertice (cada estacion) se recorre la lista
+    de rutas servidas en dicha estación y se crean
+    arcos entre ellas para representar el cambio de ruta
+    que se puede realizar en una estación.
+    """
+    lststops = m.keySet(analyzer['aeropuertos'])
+    for key in lt.iterator(lststops):
+        lista = m.get(analyzer['aeropuertos'], key)['value']
+        prevrout = None
+        for route in lt.iterator(lista):
+            route = key + '-' + route
+            if prevrout is not None:
+                addConnection(analyzer, prevrout, route, 0)
+                addConnection(analyzer, route, prevrout, 0)
+            prevrout = route
+
 # Funciones para creacion de datos
 def formatVertex(service):
     """
@@ -115,6 +133,39 @@ def cleanServiceDistance(lastservice, service):
         service['distance_km'] = 0
     if lastservice['distance_km'] == '':
         lastservice['distance_km'] = 0
+def addStop(analyzer, stopid):
+    """
+    Adiciona una estación como un vertice del grafo
+    """
+    
+    if not gr.containsVertex(analyzer['aeropuetos'], stopid):
+        gr.insertVertex(analyzer['aeropuertos'], stopid)
+    return analyzer
+
+def addConnection(analyzer, origin, destination, distance):
+    """
+    Adiciona un arco entre dos estaciones
+    """
+    edge = gr.getEdge(analyzer['aeropuertos'], origin, destination)
+    if edge is None:
+        gr.addEdge(analyzer['aeropuertos'], origin, destination, distance)
+    return analyzer  
+
+def addRouteStop(analyzer, service):
+    """
+    Agrega a una estacion, una ruta que es servida en ese paradero
+    """
+    entry = m.get(analyzer['digrafo conecciones'], service['Destination'])
+    if entry is None:
+        lstroutes = lt.newList(cmpfunction=compareroutes)
+        lt.addLast(lstroutes, service['Airline'])
+        m.put(analyzer['digrafo conecciones'], service['Destination'], lstroutes)
+    else:
+        lstroutes = entry['value']
+        info = service['Airline']
+        if not lt.isPresent(lstroutes, info):
+            lt.addLast(lstroutes, info)
+    return analyzer
 
 
 # Funciones de consulta
@@ -129,6 +180,17 @@ def compareIATA(IATA, keyIATA):
     if (IATA == IATAcode):
         return 0
     elif (IATA > IATAcode):
+        return 1
+    else:
+        return -1
+
+def compareroutes(route1, route2):
+    """
+    Compara dos rutas
+    """
+    if (route1 == route2):
+        return 0
+    elif (route1 > route2):
         return 1
     else:
         return -1
