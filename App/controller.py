@@ -53,14 +53,14 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
     
     input_file = csv.DictReader(open(rutasFile, encoding="utf-8"),
                                 delimiter=",")
-    lastservice = None
-    for service in input_file:
-        if lastservice is not None:
-            samedeparture = lastservice['Departure'] == service['Departure']
-            samedestination = lastservice['Destination'] == service['Destination']
+    ultimoVuelo = None
+    for vuelo in input_file:
+        if ultimoVuelo is not None:
+            samedeparture = lastservice['Departure'] == vuelo['Departure']
+            samedestination = lastservice['Destination'] == vuelo['Destination']
             if samedeparture and  not samedestination:
-                model.addStopConnection(analyzer, lastservice, service)
-        lastservice = service
+                model.addStopConnection(analyzer, ultimoVuelo, vuelo)
+        lastservice = vuelo
     model.addRouteConnections(analyzer)
     return analyzer
 

@@ -71,38 +71,20 @@ def newAnalyzer():
     return analyzer
 
 # Funciones para agregar informacion al catalogo
-def addStopConnection(analyzer, lastservice, service):
-    """
-    Adiciona las estaciones al grafo como vertices y arcos entre las
-    estaciones adyacentes.
-
-    Los vertices tienen por nombre el identificador de la estacion
-    seguido de la ruta que sirve.  Por ejemplo:
-
-    75009-10
-
-    Si la estacion sirve otra ruta, se tiene: 75009-101
-    """
-    
-    origin = formatVertex(lastservice)
-    destination = formatVertex(service)
-    cleanServiceDistance(lastservice, service)
-    distance = float(service['Distance']) - float(lastservice['Distance'])
-    distance = abs(distance)
+def addStopConnection(analyzer, ultimoVuelo, vuelo):    
+    origin = formatVertex(ultimoVuelo)
+    destination = formatVertex(vuelo)
+    cleanServiceDistance(ultimoVuelo, vuelo)
+    distancia = float(vuelo['Distance']) - float(ultimoVuelo['Distance'])
+    distancia = abs(distancia)
     addStop(analyzer, origin)
     addStop(analyzer, destination)
-    addConnection(analyzer, origin, destination, distance)
-    addRouteStop(analyzer, service)
-    addRouteStop(analyzer, lastservice)
+    addConnection(analyzer, origin, destination, distancia)
+    addRouteStop(analyzer,vuelo)
+    addRouteStop(analyzer, ultimoVuelo)
     return analyzer
 
 def addRouteConnections(analyzer):
-    """
-    Por cada vertice (cada estacion) se recorre la lista
-    de rutas servidas en dicha estación y se crean
-    arcos entre ellas para representar el cambio de ruta
-    que se puede realizar en una estación.
-    """
     lststops = m.keySet(analyzer['aeropuertos'])
     for key in lt.iterator(lststops):
         lista = m.get(analyzer['aeropuertos'], key)['value']
@@ -115,46 +97,29 @@ def addRouteConnections(analyzer):
             prevrout = route
 
 # Funciones para creacion de datos
-def formatVertex(service):
-    """
-    Se formatea el nombrer del vertice con el id de la estación
-    seguido de la ruta.
-    """
-    name = service['Destination'] + '-'
-    name = name + service['Airline']
+def formatVertex(vuelo):
+    name = vuelo['Destination'] + '-'
+    name = name + vuelo['Airline']
     return name
  
 def cleanServiceDistance(lastservice, service):
-    """
-    En caso de que el archivo tenga un espacio en la
-    distancia, se reemplaza con cero.
-    """
     if service['distance_km'] == '':
         service['distance_km'] = 0
     if lastservice['distance_km'] == '':
         lastservice['distance_km'] = 0
+
 def addStop(analyzer, stopid):
-    """
-    Adiciona una estación como un vertice del grafo
-    """
-    
     if not gr.containsVertex(analyzer['aeropuetos'], stopid):
         gr.insertVertex(analyzer['aeropuertos'], stopid)
     return analyzer
 
 def addConnection(analyzer, origin, destination, distance):
-    """
-    Adiciona un arco entre dos estaciones
-    """
     edge = gr.getEdge(analyzer['aeropuertos'], origin, destination)
     if edge is None:
         gr.addEdge(analyzer['aeropuertos'], origin, destination, distance)
     return analyzer  
 
 def addRouteStop(analyzer, service):
-    """
-    Agrega a una estacion, una ruta que es servida en ese paradero
-    """
     entry = m.get(analyzer['digrafo conecciones'], service['Destination'])
     if entry is None:
         lstroutes = lt.newList(cmpfunction=compareroutes)
