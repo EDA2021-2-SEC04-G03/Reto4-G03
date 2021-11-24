@@ -33,6 +33,9 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+archivoAeropuertos = 'airports_full.csv'
+archivoRutas='routes_full.csv'
+archivoCiudades='worldcities_full.csv'
 
 def printMenu():
     print("Bienvenido")
@@ -43,11 +46,17 @@ def printMenu():
     print("4- Utilizar las millas de viajero")
     print("5- Cuantificar el efecto de un aeropuerto cerrado")
 
-catalog = None
+cont=controller.init()
+
+def opcionCero():
+    controller.loadArchivos(cont,archivoAeropuertos,archivoCiudades,archivoRutas)
+
+
 
 """
 Menu principal
 """
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
@@ -94,4 +103,9 @@ while True:
         "\n• Lista de ciudades afectadas") 
     else:
         sys.exit(0)
+
+
+
 sys.exit(0)
+
+

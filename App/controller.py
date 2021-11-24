@@ -32,6 +32,37 @@ El controlador se encarga de mediar entre la vista y el modelo.
 # Inicialización del Catálogo de libros
 
 # Funciones para la carga de datos
+def init():
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # analyzer es utilizado para interactuar con el modelo
+    analyzer = model.newAnalyzer()
+    return analyzer
+
+def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
+    """
+    Carga los datos de los archivos CSV en el modelo.
+    Se crea un arco entre cada par de estaciones que
+    pertenecen al mismo servicio y van en el mismo sentido.
+
+    addRouteConnection crea conexiones entre diferentes rutas
+    servidas en una misma estación.
+    """
+    rutasFile = cf.data_dir + archivoRutas
+    
+    input_file = csv.DictReader(open(rutasFile, encoding="utf-8"),
+                                delimiter=",")
+    ultimoVuelo = None
+    for vuelo in input_file:
+        if ultimoVuelo is not None:
+            samedeparture = lastservice['Departure'] == vuelo['Departure']
+            samedestination = lastservice['Destination'] == vuelo['Destination']
+            if samedeparture and  not samedestination:
+                model.addStopConnection(analyzer, ultimoVuelo, vuelo)
+        lastservice = vuelo
+    model.addRouteConnections(analyzer)
+    return analyzer
 
 # Funciones de ordenamiento
 
