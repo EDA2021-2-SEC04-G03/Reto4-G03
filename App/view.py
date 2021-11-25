@@ -35,7 +35,7 @@ operación solicitada
 """
 archivoAeropuertos = 'airports_full.csv'
 archivoRutas='routes_full.csv'
-archivoCiudades='worldcities_full.csv'
+archivoCiudades='worldcities.csv'
 
 def printMenu():
     print("Bienvenido")
@@ -62,6 +62,7 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 0:
         print("Cargando información de los archivos ....")
+        opcionCero()
         print("El total de aeropuertos en cada grafo"+
         "\n El total de rutas aéreas en cada grafo"+
         "\nEl total de ciudades" + 

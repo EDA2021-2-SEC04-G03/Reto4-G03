@@ -50,18 +50,26 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
     servidas en una misma estación.
     """
     rutasFile = cf.data_dir + archivoRutas
-    
-    input_file = csv.DictReader(open(rutasFile, encoding="utf-8"),
+    aeropuertosFile = cf.data_dir + archivoAeropuertos
+    ciudadesFile = cf.data_dir + archivoCiudades
+    rutasInputFile = csv.DictReader(open(rutasFile, encoding="utf-8"),
                                 delimiter=",")
+    ciudadesInputFile= csv.DictReader(open(ciudadesFile, encoding="utf-8"),
+                                delimiter=",")
+    aeropuertosInputFile= csv.DictReader(open(aeropuertosFile, encoding="utf-8"),
+                                delimiter=",")                          
     ultimoVuelo = None
-    for vuelo in input_file:
+    for aeropuerto in aeropuertosInputFile:
+        model.addAeropuerto(analyzer,aeropuerto)
+    for ciudad in ciudadesFile:
+        model.addCiudad(analyzer,ciudad)    
+    for vuelo in rutasInputFile:
         if ultimoVuelo is not None:
-            samedeparture = lastservice['Departure'] == vuelo['Departure']
-            samedestination = lastservice['Destination'] == vuelo['Destination']
-            if samedeparture and  not samedestination:
+            samedeparture = vuelo['Departure'] == vuelo['Departure']
+            samedestination = ultimoVuelo['Destination'] == ultimoVuelo['Destination']
+            if samedeparture and samedestination:
                 model.addStopConnection(analyzer, ultimoVuelo, vuelo)
-        lastservice = vuelo
-    model.addRouteConnections(analyzer)
+        ultimoVuelo = vuelo
     return analyzer
 
 # Funciones de ordenamiento

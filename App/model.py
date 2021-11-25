@@ -38,6 +38,7 @@ Se define la estructura de un catálogo de videos. El catálogo tendrá dos list
 los mismos.
 """
 
+
 # Construccion de modelos
 def newAnalyzer():
     """ Inicializa el analizador
@@ -50,6 +51,8 @@ def newAnalyzer():
     """
     analyzer = {
                     'aeropuertos': None,
+                    'aeropuertosVertices': None,
+                    'ciudades':None,
                     'digrafo conecciones': None,
                     'grafo conecciones':None,
                     'components': None,
@@ -59,7 +62,12 @@ def newAnalyzer():
     analyzer['aeropuertos'] = m.newMap(numelements=15000,
                                      maptype='PROBING',
                                      comparefunction=compareIATA)
-
+    analyzer['aeropuertosVertices'] = m.newMap(numelements=15000,
+                                     maptype='PROBING',
+                                     comparefunction=compareIATA)
+    analyzer['ciudades'] = m.newMap(numelements=15000,
+                                     maptype='PROBING',
+                                     comparefunction=compareIATA)
     analyzer['digrafo conecciones'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=100000,
@@ -75,26 +83,24 @@ def addStopConnection(analyzer, ultimoVuelo, vuelo):
     origin = formatVertex(ultimoVuelo)
     destination = formatVertex(vuelo)
     cleanServiceDistance(ultimoVuelo, vuelo)
-    distancia = float(vuelo['Distance']) - float(ultimoVuelo['Distance'])
+    distancia = float(vuelo['distance_km']) - float(ultimoVuelo['distance_km'])
     distancia = abs(distancia)
     addStop(analyzer, origin)
     addStop(analyzer, destination)
     addConnection(analyzer, origin, destination, distancia)
-    addRouteStop(analyzer,vuelo)
-    addRouteStop(analyzer, ultimoVuelo)
     return analyzer
 
-def addRouteConnections(analyzer):
-    lststops = m.keySet(analyzer['aeropuertos'])
-    for key in lt.iterator(lststops):
-        lista = m.get(analyzer['aeropuertos'], key)['value']
-        prevrout = None
-        for route in lt.iterator(lista):
-            route = key + '-' + route
-            if prevrout is not None:
-                addConnection(analyzer, prevrout, route, 0)
-                addConnection(analyzer, route, prevrout, 0)
-            prevrout = route
+# def addRouteConnections(analyzer):
+#     lststops = m.keySet(analyzer['aeropuertos'])
+#     for key in lt.iterator(lststops):
+#         lista = m.get(analyzer['aeropuertos'], key)['value']
+#         prevrout = None
+#         for route in lt.iterator(lista):
+#             route = key + '-' + route
+#             if prevrout is not None:
+#                 addConnection(analyzer, prevrout, route, 0)
+#                 addConnection(analyzer, route, prevrout, 0)
+#             prevrout = route
 
 # Funciones para creacion de datos
 def formatVertex(vuelo):
@@ -109,7 +115,7 @@ def cleanServiceDistance(lastservice, service):
         lastservice['distance_km'] = 0
 
 def addStop(analyzer, stopid):
-    if not gr.containsVertex(analyzer['aeropuetos'], stopid):
+    if not gr.containsVertex(analyzer['aeropuertos'], stopid):
         gr.insertVertex(analyzer['aeropuertos'], stopid)
     return analyzer
 
@@ -119,20 +125,27 @@ def addConnection(analyzer, origin, destination, distance):
         gr.addEdge(analyzer['aeropuertos'], origin, destination, distance)
     return analyzer  
 
-def addRouteStop(analyzer, service):
-    entry = m.get(analyzer['digrafo conecciones'], service['Destination'])
-    if entry is None:
-        lstroutes = lt.newList(cmpfunction=compareroutes)
-        lt.addLast(lstroutes, service['Airline'])
-        m.put(analyzer['digrafo conecciones'], service['Destination'], lstroutes)
-    else:
-        lstroutes = entry['value']
-        info = service['Airline']
-        if not lt.isPresent(lstroutes, info):
-            lt.addLast(lstroutes, info)
+# def addRouteStop(analyzer, service):
+#     entry = m.get(analyzer['aeropuertosVertices'], service['Destination'])
+#     if entry is None:
+#         lstroutes = lt.newList(cmpfunction=compareroutes)
+#         lt.addLast(lstroutes, service['Airline'])
+#         m.put(analyzer['aeropuertosVertices'], service['Destination'], lstroutes)
+#     else:
+#         lstroutes = entry['value']
+#         info = service['Airline']
+#         if not lt.isPresent(lstroutes, info):
+#             lt.addLast(lstroutes, info)
+#     return analyzer
+def addAeropuerto(analyzer,aeropuerto):
+    if not m.contains(analyzer['aeropuertos'], aeropuerto["IATA"]):
+        m.put(analyzer['aeropuertos'], aeropuerto["IATA"],aeropuerto)
     return analyzer
-
-
+def addCiudad(analyzer,ciudad):
+    if not m.contains(analyzer['ciudades'],ciudad["city"]):
+        m.put(analyzer['ciudades'], ciudad["city"],ciudad)
+    return analyzer
+   
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
