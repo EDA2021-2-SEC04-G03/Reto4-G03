@@ -51,8 +51,7 @@ def newAnalyzer():
     """
     analyzer = {
                     'aeropuertos': None,
-                    'aeropuertosVertices': None,
-                    'ciudades':None,
+                    'ciudades':None, #llave ciudad valor lista
                     'digrafo conecciones': None,
                     'grafo conecciones':None,
                     'components': None,
@@ -62,9 +61,7 @@ def newAnalyzer():
     analyzer['aeropuertos'] = m.newMap(numelements=15000,
                                      maptype='PROBING',
                                      comparefunction=compareIATA)
-    analyzer['aeropuertosVertices'] = m.newMap(numelements=15000,
-                                     maptype='PROBING',
-                                     comparefunction=compareIATA)
+
     analyzer['ciudades'] = m.newMap(numelements=15000,
                                      maptype='PROBING',
                                      comparefunction=compareIATA)
@@ -90,19 +87,20 @@ def addStopConnection(analyzer, ultimoVuelo, vuelo):
     addConnection(analyzer, origin, destination, distancia)
     return analyzer
 
-# def addRouteConnections(analyzer):
-#     lststops = m.keySet(analyzer['aeropuertos'])
-#     for key in lt.iterator(lststops):
-#         lista = m.get(analyzer['aeropuertos'], key)['value']
-#         prevrout = None
-#         for route in lt.iterator(lista):
-#             route = key + '-' + route
-#             if prevrout is not None:
-#                 addConnection(analyzer, prevrout, route, 0)
-#                 addConnection(analyzer, route, prevrout, 0)
-#             prevrout = route
+def addRouteConnections(analyzer):
+    lststops = m.keySet(analyzer['aeropuertos'])
+    for key in lt.iterator(lststops):
+        lista = m.get(analyzer['aeropuertos'], key)['value']
+        prevrout = None
+        for route in lt.iterator(lista):
+            route = key + '-' + route
+            if prevrout is not None:
+                addConnection(analyzer, prevrout, route, 0) #no ponerlo en cero, buscar todos los arcos que ya existan y buscar el mayor
+                #si no, calcular distancia para rellenar
+                addConnection(analyzer, route, prevrout, 0)
+            prevrout = route
 
-# Funciones para creacion de datos
+#Funciones para creacion de datos
 def formatVertex(vuelo):
     name = vuelo['Destination'] + '-'
     name = name + vuelo['Airline']
@@ -125,18 +123,6 @@ def addConnection(analyzer, origin, destination, distance):
         gr.addEdge(analyzer['aeropuertos'], origin, destination, distance)
     return analyzer  
 
-# def addRouteStop(analyzer, service):
-#     entry = m.get(analyzer['aeropuertosVertices'], service['Destination'])
-#     if entry is None:
-#         lstroutes = lt.newList(cmpfunction=compareroutes)
-#         lt.addLast(lstroutes, service['Airline'])
-#         m.put(analyzer['aeropuertosVertices'], service['Destination'], lstroutes)
-#     else:
-#         lstroutes = entry['value']
-#         info = service['Airline']
-#         if not lt.isPresent(lstroutes, info):
-#             lt.addLast(lstroutes, info)
-#     return analyzer
 def addAeropuerto(analyzer,aeropuerto):
     if not m.contains(analyzer['aeropuertos'], aeropuerto["IATA"]):
         m.put(analyzer['aeropuertos'], aeropuerto["IATA"],aeropuerto)

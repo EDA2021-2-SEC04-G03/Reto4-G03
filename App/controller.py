@@ -61,17 +61,16 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
     ultimoVuelo = None
     for aeropuerto in aeropuertosInputFile:
         model.addAeropuerto(analyzer,aeropuerto)
-    for ciudad in ciudadesFile:
+    for ciudad in ciudadesInputFile:
+        ##tener en cuenta ciudades homónimas
         model.addCiudad(analyzer,ciudad)    
     for vuelo in rutasInputFile:
+        ##no tomar en cuenta
         if ultimoVuelo is not None:
-            samedeparture = vuelo['Departure'] == vuelo['Departure']
-            samedestination = ultimoVuelo['Destination'] == ultimoVuelo['Destination']
-            if samedeparture and samedestination:
                 model.addStopConnection(analyzer, ultimoVuelo, vuelo)
         ultimoVuelo = vuelo
     return analyzer
-
+#
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
