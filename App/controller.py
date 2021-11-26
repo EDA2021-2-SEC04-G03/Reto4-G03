@@ -58,7 +58,6 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
                                 delimiter=",")
     aeropuertosInputFile= csv.DictReader(open(aeropuertosFile, encoding="utf-8"),
                                 delimiter=",")                          
-    ultimoVuelo = None
     for aeropuerto in aeropuertosInputFile:
         model.addAeropuerto(analyzer,aeropuerto)
     for ciudad in ciudadesInputFile:
@@ -74,3 +73,5 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def ciudadesHomonimas(analyzer,ciudad):
+    model.ciudadesHomonimas(analyzer,ciudad)

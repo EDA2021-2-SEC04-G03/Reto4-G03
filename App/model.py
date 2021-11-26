@@ -77,8 +77,8 @@ def newAnalyzer():
 
 # Funciones para agregar informacion al catalogo
 def addStopConnection(analyzer, ultimoVuelo, vuelo):    
-    origin = formatVertex(ultimoVuelo)
-    destination = formatVertex(vuelo)
+    origin = vuelo['Departure']
+    destination = vuelo['Destination']
     cleanServiceDistance(ultimoVuelo, vuelo)
     distancia = float(vuelo['distance_km']) - float(ultimoVuelo['distance_km'])
     distancia = abs(distancia)
@@ -101,10 +101,6 @@ def addRouteConnections(analyzer):
             prevrout = route
 
 #Funciones para creacion de datos
-def formatVertex(vuelo):
-    name = vuelo['Destination'] + '-'
-    name = name + vuelo['Airline']
-    return name
  
 def cleanServiceDistance(lastservice, service):
     if service['distance_km'] == '':
@@ -127,11 +123,17 @@ def addAeropuerto(analyzer,aeropuerto):
     if not m.contains(analyzer['aeropuertos'], aeropuerto["IATA"]):
         m.put(analyzer['aeropuertos'], aeropuerto["IATA"],aeropuerto)
     return analyzer
-def addCiudad(analyzer,ciudad):
-    if not m.contains(analyzer['ciudades'],ciudad["city"]):
-        m.put(analyzer['ciudades'], ciudad["city"],ciudad)
+def addCiudad(analyzer,ciudad):    
+    if m.contains(analyzer['ciudades'],ciudad["city"])== False:
+        listaNueva=lt.newList("ARRAY_LIST")
+        lt.addLast(listaNueva,ciudad)
+        m.put(analyzer['ciudades'],ciudad["city"],listaNueva)
+    else:
+        pareja=m.get(analyzer['ciudades'],ciudad["city"])
+        listaExistente=me.getValue(pareja)
+        lt.addLast(listaExistente,ciudad)
+        m.put(analyzer['ciudades'],ciudad["city"],listaExistente)
     return analyzer
-   
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -159,4 +161,9 @@ def compareroutes(route1, route2):
     else:
         return -1
 
-# Funciones de ordenamiento
+# Funciones Req
+#Req3#
+def ciudadesHomonimas(analyzer,ciudad):
+    pareja=m.get(analyzer['ciudades'],ciudad)
+    listaCiudades= me.getValue(pareja)
+    return listaCiudades
