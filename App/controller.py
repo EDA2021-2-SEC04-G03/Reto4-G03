@@ -62,7 +62,8 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
         model.addAeropuerto(analyzer,aeropuerto)
     for ciudad in ciudadesInputFile:
         ##tener en cuenta ciudades homónimas
-        model.addCiudad(analyzer,ciudad)    
+        model.addCiudad(analyzer,ciudad)   
+    ultimoVuelo=None 
     for vuelo in rutasInputFile:
         ##no tomar en cuenta
         if ultimoVuelo is not None:

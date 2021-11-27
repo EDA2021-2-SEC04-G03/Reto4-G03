@@ -62,9 +62,7 @@ def newAnalyzer():
                                      maptype='PROBING',
                                      comparefunction=compareIATA)
 
-    analyzer['ciudades'] = m.newMap(numelements=15000,
-                                     maptype='PROBING',
-                                     comparefunction=compareIATA)
+    analyzer['ciudades'] = m.newMap(maptype="CHAINING",loadfactor=4)
     analyzer['digrafo conecciones'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=100000,

@@ -59,15 +59,16 @@ def opcionCero():
     aeropuertosDirigido= gr.numVertices(cont["digrafo conecciones"])
     rutasDirigido= gr.numEdges(cont["digrafo conecciones"])
     ciudades= m.size(cont["ciudades"])
-    primerAropuertoDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
-    primerAropuertoNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
+    # primerAropuertoDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
+    # primerAropuertoNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
     ultimaCiudad= 1
-    return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
-            ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)
+    # return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
+    #         ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)
+    return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido, ciudades)
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
-    listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)["value"]
-    listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)["value"]
+    listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
+    listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)
     if lt.size(listaOrigen)== None or lt.size(listaOrigen)== None:
         print("no se encontró alguna de las ciudades, revise la información")
     elif lt.size(listaOrigen)==1:
@@ -103,11 +104,13 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 0:
         print("Cargando información de los archivos ....")
+        # (aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
+        #         ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)= opcionCero()
         (aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
-                ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)= opcionCero()
-        print("El total de aeropuertos en grafo dirigido"+str(aeropuertosDirigido)+
-        "\n El total de rutas aéreas en grafo dirigido"+ str(rutasDirigido)+
-        "\nEl total de ciudades" + str(ciudades)+
+                ciudades)= opcionCero()        
+        print("El total de aeropuertos en grafo dirigido: "+str(aeropuertosDirigido)+
+        "\n El total de rutas aéreas en grafo dirigido: "+ str(rutasDirigido)+
+        "\nEl total de ciudades no homonimas: " + str(ciudades)+
         "\nMostrar la información del primer aeropuerto cargado (nombre, ciudad, país, latitud y longitud) en cada grafo."+
         "\nMostrar la información de población, latitud y longitud, de la última ciudad cargada")
 
@@ -122,9 +125,9 @@ while True:
         print("Número total de clústeres presentes en la red de transporte aéreo."+
         "\nInformar si los dos aeropuertos están en el mismo clúster o no")
     elif int(inputs[0]) == 3:
-        ciudadOrigen = input('Ingrese la ciudad de origen')
-        ciudadDestino = input('Ingrese la ciudad de destino')
-        (ciudadOrigen,ciudadDestino,ruta)=opcionTres()
+        ciudadOrigen = input('Ingrese la ciudad de origen: ')
+        ciudadDestino = input('Ingrese la ciudad de destino: ')
+        (ciudadOrigen,ciudadDestino,ruta)=opcionTres(cont,ciudadOrigen,ciudadDestino)
         print("Encontrando la ruta más corta entre las ciudades")
         print("Aeropuerto de Origen"+
         "\nAeropuerto de Destino."+
