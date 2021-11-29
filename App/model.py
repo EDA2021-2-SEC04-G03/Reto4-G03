@@ -121,7 +121,8 @@ def addAeropuerto(analyzer,aeropuerto):
     if not m.contains(analyzer['aeropuertos'], aeropuerto["IATA"]):
         m.put(analyzer['aeropuertos'], aeropuerto["IATA"],aeropuerto)
     return analyzer
-def addCiudad(analyzer,ciudad):    
+def addCiudad(analyzer,ciudad,contador):  
+    m.put(analyzer['ciudades'],"contadorContador",contador) 
     if m.contains(analyzer['ciudades'],ciudad["city"])== False:
         listaNueva=lt.newList("ARRAY_LIST")
         lt.addLast(listaNueva,ciudad)

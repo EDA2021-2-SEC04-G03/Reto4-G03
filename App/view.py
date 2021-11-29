@@ -58,13 +58,14 @@ def opcionCero():
     rutasNoDirigido= gr.numEdges(cont["grafo conecciones"])
     aeropuertosDirigido= gr.numVertices(cont["digrafo conecciones"])
     rutasDirigido= gr.numEdges(cont["digrafo conecciones"])
-    ciudades= m.size(cont["ciudades"])
+    ciudades= m.get(cont['ciudades'],"contadorContador")["value"]
+    ciudades2= m.size(cont['ciudades'])-1
     # primerAropuertoDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
     # primerAropuertoNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
     ultimaCiudad= 1
     # return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
     #         ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)
-    return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido, ciudades)
+    return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido, ciudades,ciudades2)
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
@@ -76,27 +77,29 @@ def viewCiudadesHomonimas(listaOrigen,listaDestino):
     if listaOrigen== None or listaDestino== None:
         print("no se encontró alguna de las ciudades, revise la información")
         sys.exit(0)
-    elif lt.size(listaOrigen)==1:
-        infoCiudadOrigen= lt.getElement(listaOrigen,1)
-    elif lt.size(listaDestino)==1:
-        infoCiudadDestino= lt.getElement(listaOrigen,1)   
     else:
-        print("\nLa ciudad "+ciudadOrigen +" es homónima con varias ciudades, a continuación esta la lista: ")
-        printListaCiudades(listaOrigen)
-        numeroO= int(input("Por favor seleccione el número de la ciudad que desea escoger como origen: "))
-        if numeroO<= lt.size(listaOrigen):
-            infoCiudadDestino= lt.getElement(listaOrigen,numeroO)
-        else:
-            print("El número marcado no esta dentro de las opciones")
-            sys.exit(0)
-        print("\nLa ciudad "+ciudadDestino +" es homónima con varias ciudades, a continuación esta la lista:")
-        printListaCiudades(listaDestino)
-        numeroD= int(input("Por favor seleccione el número de la ciudad que desea escoger como destino: "))
-        if numeroD<= lt.size(listaDestino):
-            infoCiudadDestino= lt.getElement(listaDestino,numeroD)
-        else:
-            print("El número marcado no esta dentro de las opciones")
-            sys.exit(0)
+        if lt.size(listaOrigen)==1:
+            infoCiudadOrigen= lt.getElement(listaOrigen,1)
+        elif lt.size(listaOrigen)>1:
+            print("\nLa ciudad de origen indicada("+ciudadOrigen +") es homónima con varias ciudades, a continuación esta la lista: ")
+            printListaCiudades(listaOrigen)
+            numeroO= int(input("Por favor seleccione el número de la ciudad que desea escoger como origen: "))
+            if numeroO<= lt.size(listaOrigen):
+                infoCiudadDestino= lt.getElement(listaOrigen,numeroO)
+            else:
+                print("El número marcado no esta dentro de las opciones")
+                sys.exit(0)
+        if lt.size(listaDestino)==1:
+            infoCiudadDestino= lt.getElement(listaDestino,1)   
+        if lt.size(listaDestino)>1:
+            print("\nLa ciudad de destino indicada ("+ciudadDestino +") es homónima con varias ciudades, a continuación esta la lista:")
+            printListaCiudades(listaDestino)
+            numeroD= int(input("Por favor seleccione el número de la ciudad que desea escoger como destino: "))
+            if numeroD<= lt.size(listaDestino):
+                infoCiudadDestino= lt.getElement(listaDestino,numeroD)
+            else:
+                print("El número marcado no esta dentro de las opciones")
+                sys.exit(0)
     return(infoCiudadOrigen,infoCiudadDestino)
 
 def printListaCiudades(listaCiudades):
@@ -121,10 +124,11 @@ while True:
         # (aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
         #         ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)= opcionCero()
         (aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
-                ciudades)= opcionCero()        
+                ciudades,ciudades2)= opcionCero()        
         print("El total de aeropuertos en grafo dirigido: "+str(aeropuertosDirigido)+
         "\n El total de rutas aéreas en grafo dirigido: "+ str(rutasDirigido)+
-        "\nEl total de ciudades no homonimas: " + str(ciudades)+
+        "\nEl total de ciudades sin incluir homonimas: " + str(ciudades2)+
+        "\nEl total de ciudades  incluyendo homonimas: " + str(ciudades)+
         "\nMostrar la información del primer aeropuerto cargado (nombre, ciudad, país, latitud y longitud) en cada grafo."+
         "\nMostrar la información de población, latitud y longitud, de la última ciudad cargada")
 
