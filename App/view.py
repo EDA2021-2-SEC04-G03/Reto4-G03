@@ -69,32 +69,46 @@ def opcionCero():
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
     listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)
-    if lt.size(listaOrigen)== None or lt.size(listaOrigen)== None:
+    (infoCiudadOrigen,infoCiudadDestino)=viewCiudadesHomonimas(listaOrigen,listaDestino)
+    ruta= controller.requerimiento3(infoCiudadOrigen,infoCiudadDestino)
+    return ruta
+def viewCiudadesHomonimas(listaOrigen,listaDestino):
+    if listaOrigen== None or listaDestino== None:
         print("no se encontró alguna de las ciudades, revise la información")
+        sys.exit(0)
     elif lt.size(listaOrigen)==1:
         infoCiudadOrigen= lt.getElement(listaOrigen,1)
     elif lt.size(listaDestino)==1:
         infoCiudadDestino= lt.getElement(listaOrigen,1)   
     else:
-        "La ciudad"+ciudadOrigen +" es homónima con varias ciudades, a continuación esta la lista:"
+        print("\nLa ciudad "+ciudadOrigen +" es homónima con varias ciudades, a continuación esta la lista: ")
         printListaCiudades(listaOrigen)
-        numeroO= int(input("Por favor seleccione el número de la ciudad que desea escoger como origen:"))
-        infoCiudadOrigen= lt.getElement(listaOrigen,numeroO)
-        "La ciudad"+ciudadDestino +" es homónima con varias ciudades, a continuación esta la lista:"
-        printListaCiudades(listaOrigen)
-        numeroD= int(input("Por favor seleccione el número de la ciudad que desea escoger como destino:"))
-        infoCiudadDestino= lt.getElement(listaOrigen,numeroD)
-    
+        numeroO= int(input("Por favor seleccione el número de la ciudad que desea escoger como origen: "))
+        if numeroO<= lt.size(listaOrigen):
+            infoCiudadDestino= lt.getElement(listaOrigen,numeroO)
+        else:
+            print("El número marcado no esta dentro de las opciones")
+            sys.exit(0)
+        print("\nLa ciudad "+ciudadDestino +" es homónima con varias ciudades, a continuación esta la lista:")
+        printListaCiudades(listaDestino)
+        numeroD= int(input("Por favor seleccione el número de la ciudad que desea escoger como destino: "))
+        if numeroD<= lt.size(listaDestino):
+            infoCiudadDestino= lt.getElement(listaDestino,numeroD)
+        else:
+            print("El número marcado no esta dentro de las opciones")
+            sys.exit(0)
+    return(infoCiudadOrigen,infoCiudadDestino)
+
 def printListaCiudades(listaCiudades):
     x = PrettyTable() 
-    x.field_names = ["#","Nombre Ciudad", "Páis", "latitud", "longitud", "capital","ID"]
+    x.field_names = ["#","Nombre Ciudad", "Páis", "latitud", "Longitud", "Población","ID"]
     cont=1
     for i in lt.iterator(listaCiudades):
-        x.add_row([str(cont),str(i["city_ascii"]),str(i["country"]),str(i["lat"]),str(i["lng"]),str(i["capital"]),str(i["id"])])
+        x.add_row([str(cont),str(i["city_ascii"]),str(i["country"]),str(i["lat"]),str(i["lng"]),str(i["population"]),str(i["id"])])
         x.max_width = 25
         cont+=1
     print(x)
-    return(ciudadOrigen,ciudadDestino,ruta)
+    
 """
 Menu principal
 """
@@ -127,7 +141,7 @@ while True:
     elif int(inputs[0]) == 3:
         ciudadOrigen = input('Ingrese la ciudad de origen: ')
         ciudadDestino = input('Ingrese la ciudad de destino: ')
-        (ciudadOrigen,ciudadDestino,ruta)=opcionTres(cont,ciudadOrigen,ciudadDestino)
+        (ruta)=opcionTres(cont,ciudadOrigen,ciudadDestino)
         print("Encontrando la ruta más corta entre las ciudades")
         print("Aeropuerto de Origen"+
         "\nAeropuerto de Destino."+

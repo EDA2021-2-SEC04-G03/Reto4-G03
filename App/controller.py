@@ -75,4 +75,6 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
 
 # Funciones de consulta sobre el catálogo
 def ciudadesHomonimas(analyzer,ciudad):
-    model.ciudadesHomonimas(analyzer,ciudad)
+    return model.ciudadesHomonimas(analyzer,ciudad)
+def requerimiento3(infoCiudadOrigen,infoCiudadDestino):
+    return model.requerimiento3(infoCiudadOrigen,infoCiudadDestino)

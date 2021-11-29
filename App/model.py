@@ -163,5 +163,11 @@ def compareroutes(route1, route2):
 #Req3#
 def ciudadesHomonimas(analyzer,ciudad):
     pareja=m.get(analyzer['ciudades'],ciudad)
-    listaCiudades= me.getValue(pareja)
+    listaCiudades=None
+    if pareja != None:
+        listaCiudades= me.getValue(pareja)
     return listaCiudades
+
+def requerimiento3(infoCiudadOrigen,infoCiudadDestino):
+    ruta=1
+    return ruta
