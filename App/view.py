@@ -59,18 +59,17 @@ def opcionCero(cont):
     aeropuertosDirigido= gr.numVertices(cont["digrafo conecciones"])
     rutasDirigido= gr.numEdges(cont["digrafo conecciones"])
     ciudades= m.get(cont['ciudades'],"contadorContador")["value"]
-    ciudades2= m.size(cont['ciudades'])-1
     iataAeDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
     infoAeDirigido=m.get(cont["aeropuertos"],iataAeDirigido)["value"]
     iataAeNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
     infoAeNoDirigido=m.get(cont["aeropuertos"],iataAeNoDirigido)["value"]
     #TODO
-    # ultimaCiudad= lt.getElement(m.valueSet(cont["grafo conecciones"]),m.size(cont["grafo conecciones"]-1))
+    ultimaCiudad= lt.getElement((lt.getElement(m.valueSet(cont["ciudades"]),m.size(cont["ciudades"])-1)),1)
     #prints
     total = PrettyTable() 
-    total.field_names = ["Grafo Dirigido","","Grafo No Dirigido"," "]
-    total.add_row(["Total de aeropuertos",str(aeropuertosDirigido),"Total de aeropuertos",str(aeropuertosNoDirigido)])
-    total.add_row(["Total de rutas",str(rutasDirigido),"Total de rutas",str(rutasNoDirigido)])
+    total.field_names = ["Grafo Dirigido","","Grafo No Dirigido"," ","Ciudades", "   "]
+    total.add_row(["Total de aeropuertos",str(aeropuertosDirigido),"Total de aeropuertos",str(aeropuertosNoDirigido),"Total Ciudades",ciudades])
+    total.add_row(["Total de rutas",str(rutasDirigido),"Total de rutas",str(rutasNoDirigido)," "," "])
     total.max_width = 25
     print(total)
     aeropuertos=PrettyTable() 
@@ -82,12 +81,13 @@ def opcionCero(cont):
     aeropuertos.max_width = 10
     print("Primeros aeropuertos cargados")
     print(aeropuertos)
-    # ciudad=PrettyTable() 
-    # ciudad.field_names = ["#","Nombre Ciudad", "Páis", "latitud", "Longitud", "Población","ID"]
-    # ciudad.add_row([str(cont),str(ultimaCiudad["city_ascii"]),str(ultimaCiudad["country"]),str(ultimaCiudad["lat"]),str(ultimaCiudad["lng"]),str(ultimaCiudad["population"]),str(ultimaCiudad["id"])])
-    # ciudad.max_width = 25
-    # print("Ultima Ciudad Cargada")
-    # print(ciudad)
+    ciudad=PrettyTable() 
+    ciudad.field_names = ["Nombre Ciudad", "Páis", "latitud", "Longitud", "Población","ID"]
+    ciudad.add_row([str(ultimaCiudad["city_ascii"]),str(ultimaCiudad["country"]),str(ultimaCiudad["lat"]),str(ultimaCiudad["lng"]),str(ultimaCiudad["population"]),str(ultimaCiudad["id"])])
+    ciudad.max_width = 25
+    print("Ultima Ciudad Cargada")
+    print(ciudad)
+    
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
     listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)

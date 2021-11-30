@@ -54,8 +54,6 @@ def newAnalyzer():
                     'ciudades':None, 
                     'digrafo conecciones': None,
                     'grafo conecciones':None,
-                    'components': None,
-                    'paths': None
                     }
 
     analyzer['aeropuertos'] = m.newMap(numelements=15000,
