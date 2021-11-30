@@ -106,7 +106,7 @@ def viewCiudadesHomonimas(listaOrigen,listaDestino):
             printListaCiudades(listaOrigen)
             numeroO= int(input("Por favor seleccione el número de la ciudad que desea escoger como origen: "))
             if numeroO<= lt.size(listaOrigen):
-                infoCiudadDestino= lt.getElement(listaOrigen,numeroO)
+                infoCiudadOrigen= lt.getElement(listaOrigen,numeroO)
             else:
                 print("El número marcado no esta dentro de las opciones")
                 sys.exit(0)
