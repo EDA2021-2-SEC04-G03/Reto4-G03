@@ -65,7 +65,7 @@ def opcionCero(cont):
     iataAeNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
     infoAeNoDirigido=m.get(cont["aeropuertos"],iataAeNoDirigido)["value"]
     #TODO
-    ultimaCiudad= 1
+    # ultimaCiudad= lt.getElement(m.valueSet(cont["grafo conecciones"]),m.size(cont["grafo conecciones"]-1))
     #prints
     total = PrettyTable() 
     total.field_names = ["Grafo Dirigido","","Grafo No Dirigido"," "]
