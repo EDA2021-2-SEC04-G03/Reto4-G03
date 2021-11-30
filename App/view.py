@@ -60,12 +60,10 @@ def opcionCero():
     rutasDirigido= gr.numEdges(cont["digrafo conecciones"])
     ciudades= m.get(cont['ciudades'],"contadorContador")["value"]
     ciudades2= m.size(cont['ciudades'])-1
-    # primerAropuertoDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
-    # primerAropuertoNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
+    primerAropuertoDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
+    primerAropuertoNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
     ultimaCiudad= 1
-    # return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
-    #         ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)
-    return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido, ciudades,ciudades2)
+    return(aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido, ciudades,ciudades2,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
@@ -121,12 +119,12 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 0:
         print("Cargando información de los archivos ....")
-        # (aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
-        #         ciudades,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)= opcionCero()
         (aeropuertosNoDirigido,rutasNoDirigido,aeropuertosDirigido,rutasDirigido,
-                ciudades,ciudades2)= opcionCero()        
+                ciudades,ciudades2,primerAropuertoDirigido,primerAropuertoNoDirigido,ultimaCiudad)= opcionCero()
         print("El total de aeropuertos en grafo dirigido: "+str(aeropuertosDirigido)+
-        "\n El total de rutas aéreas en grafo dirigido: "+ str(rutasDirigido)+
+        "\nEl total de rutas aéreas en grafo dirigido: "+ str(rutasDirigido)+
+        "\nEl total de aeropuertos en grafo dirigido: "+str(aeropuertosNoDirigido)+
+        "\nEl total de rutas aéreas en grafo no dirigido: "+ str(rutasNoDirigido)+
         "\nEl total de ciudades sin incluir homonimas: " + str(ciudades2)+
         "\nEl total de ciudades  incluyendo homonimas: " + str(ciudades)+
         "\nMostrar la información del primer aeropuerto cargado (nombre, ciudad, país, latitud y longitud) en cada grafo."+

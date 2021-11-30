@@ -41,14 +41,6 @@ def init():
     return analyzer
 
 def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
-    """
-    Carga los datos de los archivos CSV en el modelo.
-    Se crea un arco entre cada par de estaciones que
-    pertenecen al mismo servicio y van en el mismo sentido.
-
-    addRouteConnection crea conexiones entre diferentes rutas
-    servidas en una misma estación.
-    """
     rutasFile = cf.data_dir + archivoRutas
     aeropuertosFile = cf.data_dir + archivoAeropuertos
     ciudadesFile = cf.data_dir + archivoCiudades
@@ -63,14 +55,9 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
     contadorCiudades=0
     for ciudad in ciudadesInputFile:
         contadorCiudades=contadorCiudades+1
-        ##tener en cuenta ciudades homónimas
         model.addCiudad(analyzer,ciudad,contadorCiudades)   
-    ultimoVuelo=None 
     for vuelo in rutasInputFile:
-        ##no tomar en cuenta
-        if ultimoVuelo is not None:
-                model.addStopConnection(analyzer, ultimoVuelo, vuelo)
-        ultimoVuelo = vuelo
+        model.addStopConnection(analyzer, vuelo)
     return analyzer
 #
 # Funciones de ordenamiento

@@ -51,7 +51,7 @@ def newAnalyzer():
     """
     analyzer = {
                     'aeropuertos': None,
-                    'ciudades':None, #llave ciudad valor lista
+                    'ciudades':None, 
                     'digrafo conecciones': None,
                     'grafo conecciones':None,
                     'components': None,
@@ -74,15 +74,19 @@ def newAnalyzer():
     return analyzer
 
 # Funciones para agregar informacion al catalogo
-def addStopConnection(analyzer, ultimoVuelo, vuelo):    
+def addStopConnection(analyzer, vuelo):    
     origin = vuelo['Departure']
     destination = vuelo['Destination']
-    cleanServiceDistance(ultimoVuelo, vuelo)
-    distancia = float(vuelo['distance_km']) - float(ultimoVuelo['distance_km'])
+    # cleanServiceDistance(vuelo)
+    distancia = float(vuelo['distance_km'])
     distancia = abs(distancia)
-    addStop(analyzer, origin)
-    addStop(analyzer, destination)
-    addConnection(analyzer, origin, destination, distancia)
+    addStop(analyzer['digrafo conecciones'], origin)
+    addStop(analyzer['digrafo conecciones'], destination)
+    addConnection(analyzer['digrafo conecciones'], origin, destination, distancia)
+    if gr.getEdge(analyzer['digrafo conecciones'],destination,origin)!=None:
+        addStop(analyzer['grafo conecciones'], origin)
+        addStop(analyzer['grafo conecciones'], destination)
+        addConnection(analyzer['grafo conecciones'], origin, destination, distancia)
     return analyzer
 
 def addRouteConnections(analyzer):
@@ -100,26 +104,27 @@ def addRouteConnections(analyzer):
 
 #Funciones para creacion de datos
  
-def cleanServiceDistance(lastservice, service):
-    if service['distance_km'] == '':
-        service['distance_km'] = 0
-    if lastservice['distance_km'] == '':
-        lastservice['distance_km'] = 0
+# def cleanServiceDistance(lastservice, service):
+#     #TODO arreglar esta cosa con distancia calculada#
+#     if service['distance_km'] == '':
+#         service['distance_km'] = 0
+#     if lastservice['distance_km'] == '':
+#         lastservice['distance_km'] = 0
 
-def addStop(analyzer, stopid):
-    if not gr.containsVertex(analyzer['aeropuertos'], stopid):
-        gr.insertVertex(analyzer['aeropuertos'], stopid)
-    return analyzer
+def addStop(grafo, iata):
+    if not gr.containsVertex(grafo, iata):
+        gr.insertVertex(grafo, iata)
 
-def addConnection(analyzer, origin, destination, distance):
-    edge = gr.getEdge(analyzer['aeropuertos'], origin, destination)
+def addConnection(grafo, origin, destination, distance):
+    edge = gr.getEdge(grafo, origin, destination)
     if edge is None:
-        gr.addEdge(analyzer['aeropuertos'], origin, destination, distance)
-    return analyzer  
+        gr.addEdge(grafo, origin, destination, distance)
 
 def addAeropuerto(analyzer,aeropuerto):
     if not m.contains(analyzer['aeropuertos'], aeropuerto["IATA"]):
         m.put(analyzer['aeropuertos'], aeropuerto["IATA"],aeropuerto)
+        addStop(analyzer['digrafo conecciones'], aeropuerto["IATA"])
+
     return analyzer
 def addCiudad(analyzer,ciudad,contador):  
     m.put(analyzer['ciudades'],"contadorContador",contador) 
