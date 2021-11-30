@@ -77,7 +77,6 @@ def newAnalyzer():
 def addStopConnection(analyzer, vuelo):    
     origin = vuelo['Departure']
     destination = vuelo['Destination']
-    cleanServiceDistance(analyzer,vuelo)
     distancia = float(vuelo['distance_km'])
     distancia = abs(distancia)
     addStop(analyzer['digrafo conecciones'], origin)
@@ -103,7 +102,7 @@ def addRouteConnections(analyzer):
             prevrout = route
 #Funciones para creacion de datos
  
-def cleanServiceDistance(analyzer, ruta):
+def haversineDistance(analyzer, ruta):
     #TODO arreglar esta cosa con distancia calculada#
     if ruta['distance_km'] == '' or ruta['distance_km'] == 0:
         origenIATA= ruta["Departure"]
