@@ -30,7 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from math import sin, cos, sqrt, atan2, radians
 assert cf
 
 """
@@ -77,7 +77,7 @@ def newAnalyzer():
 def addStopConnection(analyzer, vuelo):    
     origin = vuelo['Departure']
     destination = vuelo['Destination']
-    # cleanServiceDistance(vuelo)
+    cleanServiceDistance(analyzer,vuelo)
     distancia = float(vuelo['distance_km'])
     distancia = abs(distancia)
     addStop(analyzer['digrafo conecciones'], origin)
@@ -101,15 +101,28 @@ def addRouteConnections(analyzer):
                 #si no, calcular distancia para rellenar
                 addConnection(analyzer, route, prevrout, 0)
             prevrout = route
-
 #Funciones para creacion de datos
  
-# def cleanServiceDistance(lastservice, service):
-#     #TODO arreglar esta cosa con distancia calculada#
-#     if service['distance_km'] == '':
-#         service['distance_km'] = 0
-#     if lastservice['distance_km'] == '':
-#         lastservice['distance_km'] = 0
+def cleanServiceDistance(analyzer, ruta):
+    #TODO arreglar esta cosa con distancia calculada#
+    if ruta['distance_km'] == '' or ruta['distance_km'] == 0:
+        origenIATA= ruta["Departure"]
+        destinoIATA= ruta["Destination"]
+        infoOrigen= m.get(analyzer["aeropuertos"],origenIATA)["value"]
+        infoDestino=m.get(analyzer["aeropuertos"],destinoIATA)["value"]
+        # código adaptado de https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
+        # approximate radius of earth in km
+        R = 6373.0
+        lat1 = radians(infoOrigen["Latitude"])
+        lon1 = radians(infoOrigen["Longitude"])
+        lat2 = radians(infoDestino["Latitude"])
+        lon2 = radians(infoDestino["Longitude"])
+        dlon = lon2 - lon1
+        dlat = lat2 - lat1
+        a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        distance = R * c
+        ruta['distance_km'] = distance
 
 def addStop(grafo, iata):
     if not gr.containsVertex(grafo, iata):
