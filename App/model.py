@@ -178,6 +178,32 @@ def compareroutes(route1, route2):
         return -1
 
 # Funciones Req
+#Req 1
+def interconexionAerea (analyzer):
+    listaVertices = m.keySet(analyzer['aeropuertos'])
+    maxvert = None
+    numInterconectados = 0
+    for i in lt.iterator(listaVertices):
+        vertice = m.get(analyzer['aeropuertos'], i)['value']
+        grado = lt.size(vertice)
+        if(grado > numInterconectados):
+            maxvert = i
+            numInterconectados = grado
+    #info para el digrafo de conecciones
+    listaAeropuertos=gr.adjacents(analyzer["digrafo conecciones"],maxvert)
+    listaDigrafo=lt.newList("ARRAY_LIST")
+    for aeropuerto in lt.iterator(listaAeropuertos):
+        value=m.get(analyzer["aeropuertos"],aeropuerto)["value"]
+        lt.addLast(listaDigrafo,value)
+    #info para el grafo de conecciones
+    listaAeropuertosDirigido=gr.adjacents(analyzer["grafo conecciones"],maxvert)
+    listaGrafo=lt.newList("ARRAY_LIST")
+    for aeropuerto2 in lt.iterator(listaAeropuertosDirigido):
+        value=m.get(analyzer["aeropuertos"],aeropuerto2)["value"]
+        lt.addLast(listaGrafo,value)
+    dicRta={"interconectados":numInterconectados,"lista digrafo":listaDigrafo,"lista grafo":listaGrafo}
+    return dicRta
+
 #Req3#
 def ciudadesHomonimas(analyzer,ciudad):
     pareja=m.get(analyzer['ciudades'],ciudad)
