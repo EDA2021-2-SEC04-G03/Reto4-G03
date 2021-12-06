@@ -67,3 +67,5 @@ def ciudadesHomonimas(analyzer,ciudad):
     return model.ciudadesHomonimas(analyzer,ciudad)
 def requerimiento3(infoCiudadOrigen,infoCiudadDestino):
     return model.requerimiento3(infoCiudadOrigen,infoCiudadDestino)
+def requerimiento1 (analyzer):
+    return model.interconexionAerea(analyzer)

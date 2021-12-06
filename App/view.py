@@ -87,7 +87,28 @@ def opcionCero(cont):
     ciudad.max_width = 25
     print("Ultima Ciudad Cargada")
     print(ciudad)
-    
+
+def opcionUno (analyzer):
+    dict=controller.requerimiento1(analyzer)
+    numInterconectados=dict["interconectados"]
+    digrafo=dict["lista digrafo"]  
+    grafo=dict["grafo"]
+    subListadi=lt.subList(digrafo,1,5)
+    sublistagr=lt.subList(grafo,1,5)
+    print(subListadi)
+    x = PrettyTable() 
+    x.field_names = ["Nombre", "Ciudad","Páis"]
+    for i in lt.iterator(subListadi):
+        x.add_row([str(i,["city_ascii"],["city_ascii"]),str(i["country"])])
+        x.max_width = 25
+    print(x)
+    y = PrettyTable() 
+    y.field_names = ["Nombre", "Ciudad","Páis"]
+    for i in lt.iterator(subListadi):
+        y.add_row([str(i,["city_ascii"],["city_ascii"]),str(i["country"])])
+        y.max_width = 25
+    print(y)
+
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
     listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)

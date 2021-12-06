@@ -204,6 +204,15 @@ def interconexionAerea (analyzer):
     dicRta={"interconectados":numInterconectados,"lista digrafo":listaDigrafo,"lista grafo":listaGrafo}
     return dicRta
 
+#Req 2#
+def clusteresTraficoAereo (analyzer, IATA1,IATA2):
+    comF=scc.KosarajuSCC(analyzer["digrafo conecciones"])
+    #número de conectados
+    conectados=scc.connectedComponents(comF)
+    #verifica si los dos aeropuertos estan en el mismo cluster
+    iatasConectados=scc.stronglyConnected(comF,IATA1,IATA2)
+
+
 #Req3#
 def ciudadesHomonimas(analyzer,ciudad):
     pareja=m.get(analyzer['ciudades'],ciudad)
@@ -212,6 +221,22 @@ def ciudadesHomonimas(analyzer,ciudad):
         listaCiudades= me.getValue(pareja)
     return listaCiudades
 
-def requerimiento3(infoCiudadOrigen,infoCiudadDestino):
-    ruta=1
-    return ruta
+#Req 4#
+def millasViajero(analyzer,ciudadOrigen,millas):
+    camino=djk.Dijkstra(analyzer["digrafo conecciones"],ciudadOrigen)
+    nodos=gr.numVertices(camino)
+    #se suman todos los pesos y se saca la diferencia con las millas
+    arcos=gr.edges(camino)
+    pesos=0
+    for i in lt.iterator(arcos):
+        pesos=0
+        #acceder al peso del arco y sumar a la variable
+    diferencia=0
+    cant=""
+    if millas>pesos:
+        diferencia=millas-pesos
+        cant="Excedente"
+    else:
+        diferencia=pesos-millas
+        cant="Faltante"
+    #falta sacar la rama más larga
