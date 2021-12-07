@@ -215,32 +215,32 @@ def compareroutes(route1, route2):
     else:
         return -1
 
+def cmpLista(vertice1,vertice2):
+    grado1=vertice1[0]
+    grado2=vertice2[0]
+    if (grado1 == grado2):
+        return 0
+    elif (grado1 > grado2):
+        return 1
+    else:
+        return -1
+
 # Funciones Req
 #Req 1
 def interconexionAerea(analyzer):
-    listaVertices = m.keySet(analyzer['aeropuertos'])
-    maxvert = None
-    numInterconectados = 0
-    for i in lt.iterator(listaVertices):
-        vertice = m.get(analyzer['aeropuertos'], i)['value']
-        grado = lt.size(vertice)
-        if(grado > numInterconectados):
-            maxvert = i
-            numInterconectados = grado
-    #info para el digrafo de conecciones
-    listaAeropuertos=gr.adjacents(analyzer["digrafo conecciones"],maxvert)
-    listaDigrafo=lt.newList("ARRAY_LIST")
-    for aeropuerto in lt.iterator(listaAeropuertos):
-        value=m.get(analyzer["aeropuertos"],aeropuerto)["value"]
-        lt.addLast(listaDigrafo,value)
-    #info para el grafo de conecciones
-    listaAeropuertosDirigido=gr.adjacents(analyzer["grafo conecciones"],maxvert)
-    listaGrafo=lt.newList("ARRAY_LIST")
-    for aeropuerto2 in lt.iterator(listaAeropuertosDirigido):
-        value=m.get(analyzer["aeropuertos"],aeropuerto2)["value"]
-        lt.addLast(listaGrafo,value)
-    dicRta={"interconectados":numInterconectados,"lista digrafo":listaDigrafo,"lista grafo":listaGrafo}
-    return dicRta
+    listaVerticesDirigido = gr.vertices(analyzer["digrafo conecciones"])
+    minPqDirigido=mpq.newMinPQ(cmpLista)
+    for vertice in lt.iterator(listaVerticesDirigido):
+        grado=gr.degree(analyzer["digrafo conecciones"],vertice)
+        info=[vertice,grado]
+        mpq.insert(minPqDirigido,info)
+    listaVerticesNodirigido = gr.vertices(analyzer["digrafo conecciones"])
+    minPqNodirigido=mpq.newMinPQ(cmpLista)
+    for vertice in lt.iterator(listaVerticesNodirigido):
+        grado=gr.degree(analyzer["digrafo conecciones"],vertice)
+        info=[vertice,grado]
+        mpq.insert(minPqNodirigido,info)
+    return (minPqDirigido,minPqNodirigido)
 
 
 #Req 2#
@@ -349,10 +349,10 @@ def millasViajero(analyzer,ciudadOrigen,millas):
     arcos=gr.edges(camino)
     pesos=0
     for i in lt.iterator(arcos):
-        pesos=0
+        pesos+=0
         #acceder al peso del arco y sumar a la variable
     diferencia=0
-    cant=""
+    cant=None
     if millas>pesos:
         diferencia=millas-pesos
         cant="Excedente"
