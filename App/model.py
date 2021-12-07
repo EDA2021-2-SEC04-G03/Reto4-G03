@@ -28,12 +28,14 @@
 import config as cf
 import sys
 from DISClib.ADT import list as lt
+from DISClib.ADT import minpq as mpq
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
+from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
-from math import sin, cos, sqrt, atan2, radians
+from math import sin, cos, sqrt, atan2, radians,pi
 sys.setrecursionlimit(2**20)
 assert cf
 
@@ -67,6 +69,8 @@ def newAnalyzer():
                                               directed=False,
                                               size=100000,
                                               comparefunction=compareIATA)
+    analyzer['indiceLatitud'] = om.newMap(omaptype='RBT',
+                                      comparefunction=cmpCoordenada)
     return analyzer
 
 # Funciones para agregar informacion al catalogo
@@ -132,8 +136,35 @@ def addAeropuerto(analyzer,aeropuerto):
     if not m.contains(analyzer['aeropuertos'], aeropuerto["IATA"]):
         m.put(analyzer['aeropuertos'], aeropuerto["IATA"],aeropuerto)
         addStop(analyzer['digrafo conecciones'], aeropuerto["IATA"])
-
+    updateLatitud(analyzer["indiceLatitud"],aeropuerto)
     return analyzer
+def updateLatitud(map, registro):
+    #redondear las llave a dos decimales##
+    latitud= round(float(registro["Latitude"]),2)
+    if om.isEmpty(map)==True or om.contains(map,latitud)==False:
+        longitud=round(float(registro["Longitude"]),2)
+        mapaNuevoLongitud= om.newMap(omaptype='RBT',comparefunction=cmpCoordenada)
+        listaNueva=lt.newList("ARRAY_LIST")
+        lt.addLast(listaNueva,registro)
+        om.put(mapaNuevoLongitud,longitud,listaNueva)
+        om.put(map,latitud,mapaNuevoLongitud)
+    else:
+        longitud=round(float(registro["Longitude"]),2)
+        mapaExistenteLongitud= om.get(map,latitud)["value"]
+        addOrCreateListInMap(mapaExistenteLongitud,longitud,registro)
+        om.put(map,latitud,mapaExistenteLongitud)
+    return map
+
+def addOrCreateListInMap(mapa, llave, elemento):
+    if om.contains(mapa,llave)==False:
+        lista_nueva=lt.newList("ARRAY_LIST")
+        lt.addLast(lista_nueva,elemento)
+        om.put(mapa,llave,lista_nueva)
+    else:
+        pareja=om.get(mapa,llave)
+        lista_existente=me.getValue(pareja)
+        lt.addLast(lista_existente,elemento)
+        om.put(mapa,llave,lista_existente)
 def addCiudad(analyzer,ciudad,contador):  
     m.put(analyzer['ciudades'],"contadorContador",contador) 
     if m.contains(analyzer['ciudades'],ciudad["city"])== False:
@@ -162,6 +193,17 @@ def compareIATA(IATA, keyIATA):
     else:
         return -1
 
+def cmpCoordenada(latitud1,latitud2):
+    """
+    Compara dos fechas
+    """
+    if (latitud1 == latitud2):
+        return 0
+    elif (latitud1 > latitud2):
+        return 1
+    else:
+        return -1 
+
 def compareroutes(route1, route2):
     """
     Compara dos rutas
@@ -175,7 +217,7 @@ def compareroutes(route1, route2):
 
 # Funciones Req
 #Req 1
-def interconexionAerea (analyzer):
+def interconexionAerea(analyzer):
     listaVertices = m.keySet(analyzer['aeropuertos'])
     maxvert = None
     numInterconectados = 0
@@ -220,35 +262,67 @@ def ciudadesHomonimas(analyzer,ciudad):
         listaCiudades= me.getValue(pareja)
     return listaCiudades
 def requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino):
-    a=1
-    return None
+    iataOrigen= aeropuertoCercano(analyzer,infoCiudadOrigen)
+    iataDestino= aeropuertoCercano(analyzer,infoCiudadDestino)
+    return (iataOrigen,iataDestino)
 def aeropuertoCercano(analyzer,infoCiudad):
-    listaCercanos= lt.newList("ARRAY_LIST")
     kilometros= 10
     seHaEncontrado= False
-    while seHaEncontrado==False and kilometros>1000:
-        for aeropuerto in analyzer["aeropuertos"]:
-            distancia= distanciaAeropuerto(aeropuerto,infoCiudad)
-            if distancia>=10:
-                lt.addLast(listaCercanos,aeropuerto)
-        if lt.size(listaCercanos) != None or lt.size(listaCercanos)>0:
+    listaAeropuertosArea= lt.newList("ARRAY_LIST")
+    while seHaEncontrado==False and kilometros<1000:
+        (latMax,latMin,lonMax,lonMin)=coordenadasMaximas(infoCiudad,kilometros)
+        listaAeropuertosArea= aeropuertosPorZonaGeografica(analyzer,lonMin,lonMax,latMin,latMax)
+        if lt.isEmpty(listaAeropuertosArea)==False:
             seHaEncontrado=True
-            kilometros= kilometros + 10
+        else:
+            kilometros= kilometros +10
+    #calcular distancia por cada uno y ver cual es el menor###
+    if lt.isEmpty(listaAeropuertosArea)==False:
+        distanciaMin=None
+        iatamin=""
+        for aeropuerto in lt.iterator(listaAeropuertosArea):
+            distancia= distanciaAeropuerto(aeropuerto,infoCiudad)
+            if distanciaMin== None:
+                distanciaMin= distancia
+                iatamin= aeropuerto["IATA"]
+            elif distancia< distanciaMin:
+                distanciaMin=distancia
+                iatamin= aeropuerto["IATA"]
+    return (distanciaMin,iatamin)
 
-    if lt.size(listaCercanos) != None or lt.size(listaCercanos)>0:
-        r=1
-        #TODO#
-        #recorrer la lista y buscar el menor, devolver ese
-
-    return listaCercanos
+def coordenadasMaximas(ciudad,km):
+    # código adaptado de https://stackoverflow.com/questions/7477003/calculating-new-longitude-latitude-from-old-n-meters
+    #RADIO aprox de la tierra
+    R = 6378.137
+    rangoMetros= km*1000
+    latitude = float(ciudad["lat"])
+    longitude =float(ciudad["lng"])
+    #un metro en grados
+    m = (1 / ((2 * pi / 360) * R)) / 1000
+    #Nuevas lat y lon max
+    latMax=latitude + (rangoMetros * m)
+    latMin=latitude  -  (rangoMetros * m)
+    lonMax= longitude + (rangoMetros * m) / cos(latitude * (pi / 180))
+    lonMin=longitude - (rangoMetros * m) / cos(latitude * (pi / 180))
+    return (latMax,latMin,lonMax,lonMin)
+def aeropuertosPorZonaGeografica(catologo,longitudMin,longitudMax,latitudMin,latitudMax):
+    mapLatitud=catologo["indiceLatitud"]
+    ListadeMapasenRangoLatitud=om.values(mapLatitud,latitudMin,latitudMax)
+    ListaRangoLatyLon= lt.newList("ARRAYLIST")
+    for mapaLongitudes in lt.iterator(ListadeMapasenRangoLatitud):
+        listaRegistros= om.values(mapaLongitudes,longitudMin,longitudMax)
+        for registros in lt.iterator(listaRegistros):
+            for registro in lt.iterator(registros):
+                lt.addLast(ListaRangoLatyLon,registro)
+    return(ListaRangoLatyLon)
 def distanciaAeropuerto(aeropuerto, ciudad):
     # código adaptado de https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
     # approximate radius of earth in km
     R = 6373.0
-    lat1 = radians(ciudad["lat"])
-    lon1 = radians(ciudad["lng"])
-    lat2 = radians(aeropuerto["Latitude"])
-    lon2 = radians(aeropuerto["Longitude"])
+    lat1 = radians(float(ciudad["lat"]))
+    lon1 = radians(float(ciudad["lng"]))
+    lat2 = radians(float(aeropuerto["Latitude"]))
+    lon2 = radians(float(aeropuerto["Longitude"]))
     dlon = lon2 - lon1
     dlat = lat2 - lat1
     a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2

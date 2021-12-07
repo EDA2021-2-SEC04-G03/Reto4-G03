@@ -39,7 +39,7 @@ operación solicitada
 """
 archivoAeropuertos = 'airports-utf8-small.csv'
 archivoRutas='routes-utf8-small.csv'
-archivoCiudades='worldcities.csv'
+archivoCiudades='worldcities-utf8.csv'
 
 def printMenu():
     print("Bienvenido")
@@ -113,8 +113,12 @@ def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
     listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)
     (infoCiudadOrigen,infoCiudadDestino)=viewCiudadesHomonimas(listaOrigen,listaDestino)
-    ruta= controller.requerimiento3(infoCiudadOrigen,infoCiudadDestino)
-    return ruta
+    (origen,destino)= controller.requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino)
+    print(origen)
+    print(destino)
+    (disTerrestreOrigen,iataOrigen)=origen
+    (disTerrestreDestino,iataDestino)=destino
+
 
 def opcionDos(analyzer,codigo1,codigo2):
     (componentesConectados, iatasConectados)=controller.clusteresTraficoAereo(analyzer,codigo1,codigo2)
@@ -191,7 +195,7 @@ while True:
     elif int(inputs[0]) == 3:
         ciudadOrigen = input('Ingrese la ciudad de origen: ')
         ciudadDestino = input('Ingrese la ciudad de destino: ')
-        (ruta)=opcionTres(cont,ciudadOrigen,ciudadDestino)
+        opcionTres(cont,ciudadOrigen,ciudadDestino)
         print("Encontrando la ruta más corta entre las ciudades")
         print("Aeropuerto de Origen"+
         "\nAeropuerto de Destino."+
