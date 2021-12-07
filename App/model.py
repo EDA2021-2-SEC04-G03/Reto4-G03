@@ -26,6 +26,7 @@
 
 
 import config as cf
+import sys
 from DISClib.ADT import list as lt
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
@@ -33,6 +34,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from math import sin, cos, sqrt, atan2, radians
+sys.setrecursionlimit(2**20)
 assert cf
 
 """
@@ -43,19 +45,13 @@ los mismos.
 
 # Construccion de modelos
 def newAnalyzer():
-    """ Inicializa el analizador
-
-   stops: Tabla de hash para guardar los vertices del grafo
-   connections: Grafo para representar las rutas entre estaciones
-   components: Almacena la informacion de los componentes conectados
-   paths: Estructura que almancena los caminos de costo minimo desde un
-           vertice determinado a todos los otros vértices del grafo
-    """
     analyzer = {
                     'aeropuertos': None,
                     'ciudades':None, 
                     'digrafo conecciones': None,
                     'grafo conecciones':None,
+                    'components': None,
+                    'paths': None
                     }
 
     analyzer['aeropuertos'] = m.newMap(numelements=15000,
@@ -204,14 +200,18 @@ def interconexionAerea (analyzer):
     dicRta={"interconectados":numInterconectados,"lista digrafo":listaDigrafo,"lista grafo":listaGrafo}
     return dicRta
 
-#Req 2#
-def clusteresTraficoAereo (analyzer, IATA1,IATA2):
-    comF=scc.KosarajuSCC(analyzer["digrafo conecciones"])
-    #número de conectados
-    conectados=scc.connectedComponents(comF)
-    #verifica si los dos aeropuertos estan en el mismo cluster
-    iatasConectados=scc.stronglyConnected(comF,IATA1,IATA2)
 
+#Req 2#
+def clusteresTraficoAereo(analyzer, IATA1,IATA2):
+    if analyzer['components']==None:
+        analyzer['components']=scc.KosarajuSCC(analyzer["digrafo conecciones"])
+    #número de conectados
+    conectados=scc.connectedComponents(analyzer['components'])
+    #verifica si los dos aeropuertos estan en el mismo cluster
+    iatasConectados=scc.stronglyConnected(analyzer['components'],IATA1,IATA2)
+    return(conectados,iatasConectados)
+
+#Req 4#
 
 #Req3#
 def ciudadesHomonimas(analyzer,ciudad):
@@ -220,7 +220,9 @@ def ciudadesHomonimas(analyzer,ciudad):
     if pareja != None:
         listaCiudades= me.getValue(pareja)
     return listaCiudades
-
+def requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino):
+    a=1
+    return None
 #Req 4#
 def millasViajero(analyzer,ciudadOrigen,millas):
     camino=djk.Dijkstra(analyzer["digrafo conecciones"],ciudadOrigen)

@@ -37,8 +37,8 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-archivoAeropuertos = 'airports_full.csv'
-archivoRutas='routes_full.csv'
+archivoAeropuertos = 'airports-utf8-small.csv'
+archivoRutas='routes-utf8-small.csv'
 archivoCiudades='worldcities.csv'
 
 def printMenu():
@@ -115,6 +115,17 @@ def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     (infoCiudadOrigen,infoCiudadDestino)=viewCiudadesHomonimas(listaOrigen,listaDestino)
     ruta= controller.requerimiento3(infoCiudadOrigen,infoCiudadDestino)
     return ruta
+
+def opcionDos(analyzer,codigo1,codigo2):
+    (componentesConectados, iatasConectados)=controller.clusteresTraficoAereo(analyzer,codigo1,codigo2)
+    print("Número total de clústeres presentes en la red de transporte aéreo:  " + str(componentesConectados))
+    if iatasConectados==True:
+        respuesta= " SI "
+    else:
+        respuesta= " NO "
+    print("____________________________________________________________________")
+    print("Los dos aeropuertos con IATA "+str(codigo1)+" y "+str(codigo2)+ respuesta +"están en el mismo clúster")
+    print("____________________________________________________________________")
 def viewCiudadesHomonimas(listaOrigen,listaDestino):
     if listaOrigen== None or listaDestino== None:
         print("no se encontró alguna de las ciudades, revise la información")
@@ -170,11 +181,12 @@ while True:
         print("Lista de aeropuertos (IATA, nombre, ciudad, país)"+
         "\nNúmero de aeropuertos interconectados.")
     elif int(inputs[0]) == 2:
-        codigo1 = input('Ingrese Código IATA del aeropuerto 1.')
-        codigo2= input('Ingrese Código IATA del aeropuerto 2.')
+        codigo1 = input('Ingrese Código IATA del aeropuerto 1: ')
+        codigo2= input('Ingrese Código IATA del aeropuerto 2: ')
         print("Encontrando clústeres de tráfico aéreo")
-        print("Número total de clústeres presentes en la red de transporte aéreo."+
-        "\nInformar si los dos aeropuertos están en el mismo clúster o no")
+        print("--------------------------------------------------------------------")
+        opcionDos(cont,codigo1,codigo2)
+
     elif int(inputs[0]) == 3:
         ciudadOrigen = input('Ingrese la ciudad de origen: ')
         ciudadDestino = input('Ingrese la ciudad de destino: ')
