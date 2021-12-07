@@ -123,9 +123,9 @@ def opcionDos(analyzer,codigo1,codigo2):
         respuesta= " SI "
     else:
         respuesta= " NO "
-    print("____________________________________________________________________")
+    print("______________________________________________________________________________")
     print("Los dos aeropuertos con IATA "+str(codigo1)+" y "+str(codigo2)+ respuesta +"están en el mismo clúster")
-    print("____________________________________________________________________")
+    print("______________________________________________________________________________")
 def viewCiudadesHomonimas(listaOrigen,listaDestino):
     if listaOrigen== None or listaDestino== None:
         print("no se encontró alguna de las ciudades, revise la información")
@@ -184,7 +184,8 @@ while True:
         codigo1 = input('Ingrese Código IATA del aeropuerto 1: ')
         codigo2= input('Ingrese Código IATA del aeropuerto 2: ')
         print("Encontrando clústeres de tráfico aéreo")
-        print("--------------------------------------------------------------------")
+        print("------------------------------------------------------------------------------")
+        print("______________________________________________________________________________")
         opcionDos(cont,codigo1,codigo2)
 
     elif int(inputs[0]) == 3:

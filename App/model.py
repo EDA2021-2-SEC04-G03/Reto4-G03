@@ -211,7 +211,6 @@ def clusteresTraficoAereo(analyzer, IATA1,IATA2):
     iatasConectados=scc.stronglyConnected(analyzer['components'],IATA1,IATA2)
     return(conectados,iatasConectados)
 
-#Req 4#
 
 #Req3#
 def ciudadesHomonimas(analyzer,ciudad):
@@ -223,6 +222,39 @@ def ciudadesHomonimas(analyzer,ciudad):
 def requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino):
     a=1
     return None
+def aeropuertoCercano(analyzer,infoCiudad):
+    listaCercanos= lt.newList("ARRAY_LIST")
+    kilometros= 10
+    seHaEncontrado= False
+    while seHaEncontrado==False and kilometros>1000:
+        for aeropuerto in analyzer["aeropuertos"]:
+            distancia= distanciaAeropuerto(aeropuerto,infoCiudad)
+            if distancia>=10:
+                lt.addLast(listaCercanos,aeropuerto)
+        if lt.size(listaCercanos) != None or lt.size(listaCercanos)>0:
+            seHaEncontrado=True
+            kilometros= kilometros + 10
+
+    if lt.size(listaCercanos) != None or lt.size(listaCercanos)>0:
+        r=1
+        #TODO#
+        #recorrer la lista y buscar el menor, devolver ese
+
+    return listaCercanos
+def distanciaAeropuerto(aeropuerto, ciudad):
+    # código adaptado de https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
+    # approximate radius of earth in km
+    R = 6373.0
+    lat1 = radians(ciudad["lat"])
+    lon1 = radians(ciudad["lng"])
+    lat2 = radians(aeropuerto["Latitude"])
+    lon2 = radians(aeropuerto["Longitude"])
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    distance = R * c
+    return distance
 #Req 4#
 def millasViajero(analyzer,ciudadOrigen,millas):
     camino=djk.Dijkstra(analyzer["digrafo conecciones"],ciudadOrigen)
