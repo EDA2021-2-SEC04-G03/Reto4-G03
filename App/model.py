@@ -262,9 +262,12 @@ def ciudadesHomonimas(analyzer,ciudad):
         listaCiudades= me.getValue(pareja)
     return listaCiudades
 def requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino):
-    iataOrigen= aeropuertoCercano(analyzer,infoCiudadOrigen)
-    iataDestino= aeropuertoCercano(analyzer,infoCiudadDestino)
-    return (iataOrigen,iataDestino)
+    origen= aeropuertoCercano(analyzer,infoCiudadOrigen)
+    destino= aeropuertoCercano(analyzer,infoCiudadDestino)
+    (disTerrestreOrigen,iataOrigen)=origen
+    (disTerrestreDestino,iataDestino)=destino
+    path=minimumCostPath(analyzer,iataOrigen,iataDestino)
+    return (origen,destino,path)
 def aeropuertoCercano(analyzer,infoCiudad):
     kilometros= 10
     seHaEncontrado= False
@@ -329,6 +332,15 @@ def distanciaAeropuerto(aeropuerto, ciudad):
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
     distance = R * c
     return distance
+def minimumCostPath(analyzer, initialStation,destStation):
+    """
+    Calcula los caminos de costo mínimo desde la estacion initialStation
+    a todos los demas vertices del grafo
+    """
+    paths= djk.Dijkstra(analyzer['digrafo conecciones'], initialStation)
+    path = djk.pathTo(paths, destStation)
+    return path
+
 #Req 4#
 def millasViajero(analyzer,ciudadOrigen,millas):
     camino=djk.Dijkstra(analyzer["digrafo conecciones"],ciudadOrigen)

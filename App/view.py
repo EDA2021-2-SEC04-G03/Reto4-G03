@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from os import path
 import config as cf
 import sys
 import controller
@@ -113,7 +114,7 @@ def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
     listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)
     (infoCiudadOrigen,infoCiudadDestino)=viewCiudadesHomonimas(listaOrigen,listaDestino)
-    (origen,destino)= controller.requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino)
+    (origen,destino,path)= controller.requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino)
     print(origen)
     print(destino)
     (disTerrestreOrigen,iataOrigen)=origen
