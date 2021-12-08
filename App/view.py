@@ -143,8 +143,6 @@ def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)
     (infoCiudadOrigen,infoCiudadDestino)=viewCiudadesHomonimas(listaOrigen,listaDestino)
     (origen,destino,path)= controller.requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino)
-    print(origen)
-    print(destino)
     (disTerrestreOrigen,iataOrigen)=origen
     (disTerrestreDestino,iataDestino)=destino
     tOrigen=PrettyTable()
@@ -252,9 +250,9 @@ while True:
     elif int(inputs[0]) == 3:
         ciudadOrigen = input('Ingrese la ciudad de origen: ')
         ciudadDestino = input('Ingrese la ciudad de destino: ')
-        opcionTres(cont,ciudadOrigen,ciudadDestino)
         print("Encontrando la ruta más corta entre las ciudades")
         print("------------------------------------------------------------------------------")
+        opcionTres(cont,ciudadOrigen,ciudadDestino)
     elif int(inputs[0]) == 4:
         ciudad_origen = input('Ingrese la ciudad de origen')
         cant_millas = input('Ingrese la Cantidad de millas disponibles del viajero.')
