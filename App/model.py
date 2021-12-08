@@ -75,7 +75,7 @@ def newAnalyzer():
     return analyzer
 
 # Funciones para agregar informacion al catalogo
-def addStopConnection(analyzer, vuelo):    
+def addStopConnection(analyzer, vuelo,contNodir,primerAeNoDir):    
     origin = vuelo['Departure']
     destination = vuelo['Destination']
     distancia = float(vuelo['distance_km'])
@@ -84,10 +84,13 @@ def addStopConnection(analyzer, vuelo):
     addStop(analyzer['digrafo conecciones'], destination)
     addConnection(analyzer['digrafo conecciones'], origin, destination, distancia)
     if gr.getEdge(analyzer['digrafo conecciones'],destination,origin)!=None:
+        if contNodir==0 and primerAeNoDir==None:
+            contNodir= contNodir+1
+            primerAeNoDir= m.get(analyzer["aeropuertos"],origin)["value"]
         addStop(analyzer['grafo conecciones'], origin)
         addStop(analyzer['grafo conecciones'], destination)
         addConnection(analyzer['grafo conecciones'], origin, destination, distancia)
-    return analyzer
+    return (primerAeNoDir,contNodir)
 
 def addRouteConnections(analyzer):
     lststops = m.keySet(analyzer['aeropuertos'])

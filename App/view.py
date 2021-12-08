@@ -55,39 +55,37 @@ def printMenu():
 cont=controller.init()
 
 def opcionCero(cont):
-    controller.loadArchivos(cont,archivoAeropuertos,archivoCiudades,archivoRutas)
+    (primeraCiudad,ultimaCiudad,primerAeDir,ultimoAeDir,primerAeNodir)=controller.loadArchivos(cont,archivoAeropuertos,archivoCiudades,archivoRutas)
     aeropuertosNoDirigido= gr.numVertices(cont["grafo conecciones"])
     rutasNoDirigido= gr.numEdges(cont["grafo conecciones"])
     aeropuertosDirigido= gr.numVertices(cont["digrafo conecciones"])
     rutasDirigido= gr.numEdges(cont["digrafo conecciones"])
     ciudades= m.get(cont['ciudades'],"contadorContador")["value"]
-    iataAeDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
-    infoAeDirigido=m.get(cont["aeropuertos"],iataAeDirigido)["value"]
-    iataAeNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
-    infoAeNoDirigido=m.get(cont["aeropuertos"],iataAeNoDirigido)["value"]
-    #TODO
-    ultimaCiudad= lt.getElement((lt.getElement(m.valueSet(cont["ciudades"]),m.size(cont["ciudades"])-1)),1)
-    #prints
     total = PrettyTable() 
     total.field_names = ["Grafo Dirigido","","Grafo No Dirigido"," ","Ciudades", "   "]
-    total.add_row(["Total de aeropuertos",str(aeropuertosDirigido),"Total de aeropuertos",str(aeropuertosNoDirigido),"Total Ciudades",ciudades])
-    total.add_row(["Total de rutas",str(rutasDirigido),"Total de rutas",str(rutasNoDirigido)," "," "])
+    total.add_row(["Total de aeropuertos (vértices)",str(aeropuertosDirigido),"Total de aeropuertos (vértices)",str(aeropuertosNoDirigido),"Total Ciudades",ciudades])
+    total.add_row(["Total de rutas (Edges)",str(rutasDirigido),"Total de rutas (Edges)",str(rutasNoDirigido)," "," "])
     total.max_width = 25
     print(total)
     aeropuertos=PrettyTable() 
-    aeropuertos.field_names = ["Grafo","Nombre", "Ciudad", "País", "Latitud","Longitud"]
-    aeropuertos.add_row(["No Dirigido",str(infoAeNoDirigido["Name"]),str(infoAeNoDirigido["City"]),
-                        str(infoAeNoDirigido["Country"]),str(infoAeNoDirigido["Latitude"]),str(infoAeNoDirigido["Longitude"])])
-    aeropuertos.add_row(["Dirigido",str(infoAeDirigido["Name"]),str(infoAeDirigido["City"]),
-                        str(infoAeDirigido["Country"]),str(infoAeDirigido["Latitude"]),str(infoAeDirigido["Longitude"])])
-    aeropuertos.max_width = 10
-    print("Primeros aeropuertos cargados")
+    aeropuertos.field_names = ["Grafo","Puesto","Nombre", "Ciudad", "País", "Latitud","Longitud"]
+    aeropuertos.add_row(["No Dirigido","Primero",str(primerAeNodir["Name"]),str(primerAeNodir["City"]),
+                        str(primerAeNodir["Country"]),str(round(float(primerAeNodir["Latitude"]),3)),str(round(float(primerAeNodir["Longitude"]),3))])
+    aeropuertos.add_row(["No Dirigido","Ultimo",str(ultimoAeDir["Name"]),str(ultimoAeDir["City"]),
+                        str(ultimoAeDir["Country"]),str(round(float(ultimoAeDir["Latitude"]),3)),str(round(float(ultimoAeDir["Longitude"]),3))])
+    aeropuertos.add_row(["Dirigido","Primero",str(primerAeDir["Name"]),str(primerAeDir["City"]),
+                        str(primerAeDir["Country"]),str(round(float(primerAeDir["Latitude"]),3)),str(round(float(primerAeDir["Longitude"]),3))])
+    aeropuertos.add_row(["Dirigido","Ultimo",str(ultimoAeDir["Name"]),str(ultimoAeDir["City"]),
+                        str(ultimoAeDir["Country"]),str(round(float(ultimoAeDir["Latitude"]),3)),str(round(float(ultimoAeDir["Longitude"]),3))])
+    aeropuertos.max_width = 15
+    print("Primeros y últimos aeropuertos cargados")
     print(aeropuertos)
     ciudad=PrettyTable() 
     ciudad.field_names = ["Nombre Ciudad", "Páis", "latitud", "Longitud", "Población","ID"]
+    ciudad.add_row([str(primeraCiudad["city_ascii"]),str(primeraCiudad["country"]),str(primeraCiudad["lat"]),str(primeraCiudad["lng"]),str(primeraCiudad["population"]),str(primeraCiudad["id"])])
     ciudad.add_row([str(ultimaCiudad["city_ascii"]),str(ultimaCiudad["country"]),str(ultimaCiudad["lat"]),str(ultimaCiudad["lng"]),str(ultimaCiudad["population"]),str(ultimaCiudad["id"])])
     ciudad.max_width = 25
-    print("Ultima Ciudad Cargada")
+    print("Primera y Última Ciudad Cargada")
     print(ciudad)
 
 def opcionUno (analyzer):
