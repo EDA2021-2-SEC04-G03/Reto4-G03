@@ -25,7 +25,6 @@
  """
 
 
-from DISClib.DataStructures.adjlist import outdegree
 import config as cf
 import sys
 from DISClib.ADT import list as lt
@@ -200,7 +199,7 @@ def cmpCoordenada(latitud1,latitud2):
     """
     if (latitud1 == latitud2):
         return 0
-    elif (latitud1 < latitud2):
+    elif (latitud1 > latitud2):
         return 1
     else:
         return -1 
@@ -215,11 +214,20 @@ def compareroutes(route1, route2):
         return 1
     else:
         return -1
+
+def cmpLista(vertice1,vertice2):
+    grado1=vertice1[0]
+    grado2=vertice2[0]
+    if (grado1 == grado2):
+        return 0
+    elif (grado1 > grado2):
+        return 1
+    else:
+        return -1
 def cmpGrado(vertice1,vertice2):
     grado1=vertice1[1]
     grado2=vertice2[1]
     return  (grado1 < grado2)
-
 # Funciones Req
 #Req 1
 def interconexionAerea(analyzer):

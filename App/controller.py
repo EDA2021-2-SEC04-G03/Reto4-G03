@@ -59,7 +59,6 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
     for vuelo in rutasInputFile:
         model.addStopConnection(analyzer, vuelo)
     return analyzer
-#
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
