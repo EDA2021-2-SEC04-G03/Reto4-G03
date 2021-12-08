@@ -278,7 +278,7 @@ def aeropuertoCercano(analyzer,infoCiudad):
     kilometros= 10
     seHaEncontrado= False
     listaAeropuertosArea= lt.newList("ARRAY_LIST")
-    while seHaEncontrado==False and kilometros<1000:
+    while seHaEncontrado==False and kilometros<10000:
         (latMax,latMin,lonMax,lonMin)=coordenadasMaximas(infoCiudad,kilometros)
         listaAeropuertosArea= aeropuertosPorZonaGeografica(analyzer,lonMin,lonMax,latMin,latMax)
         if lt.isEmpty(listaAeropuertosArea)==False:

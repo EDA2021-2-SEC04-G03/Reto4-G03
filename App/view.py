@@ -41,8 +41,8 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-archivoAeropuertos = 'airports-utf8-small.csv'
-archivoRutas='routes-utf8-small.csv'
+archivoAeropuertos = 'airports-utf8-large.csv'
+archivoRutas='routes-utf8-large.csv'
 archivoCiudades='worldcities-utf8.csv'
 
 def printMenu():
@@ -157,15 +157,6 @@ def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     tabla.field_names=["Origen","Destino","Distancia Km","Tipo de Trayectoria"]
     tabla.add_row([ciudadOrigen,iataOrigen,round(disTerrestreOrigen,3),"Terrestre"])  
     pesoTotal= disTerrestreOrigen+disTerrestreDestino
-    for trayecto in lt.iterator(path):
-        inicio= trayecto["vertexA"]
-        fin=trayecto["vertexB"]
-        pesoVuelo= trayecto["weight"]
-        tabla.add_row([inicio,fin,pesoVuelo,"Aérea"])  
-        pesoTotal=pesoTotal+pesoVuelo
-    tabla.add_row([ciudadDestino,iataDestino,round(disTerrestreDestino,3),"Terrestre"])  
-    tabla.add_row([" ","",round(pesoTotal,3),"TOTAL"])  
-    tabla.max_width = 25
     print("El aeropuerto de Salida cercano a "+ciudadOrigen+ " es:")
     tOrigen.max_width = 25
     print(tOrigen)
@@ -173,7 +164,19 @@ def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     tDestino.max_width = 25
     print(tDestino)
     print("Ruta recomendada:")
-    print(tabla)
+    if path== None:
+        print("No se encontró una ruta entre los dos aeropuertos más cercanos a las ciudades indicadas, \nseguramente no se encuentran en el mismo cluster aéreo")
+    else:
+        for trayecto in lt.iterator(path):
+            inicio= trayecto["vertexA"]
+            fin=trayecto["vertexB"]
+            pesoVuelo= trayecto["weight"]
+            tabla.add_row([inicio,fin,pesoVuelo,"Aérea"])  
+            pesoTotal=pesoTotal+pesoVuelo
+        tabla.add_row([ciudadDestino,iataDestino,round(disTerrestreDestino,3),"Terrestre"])  
+        tabla.add_row([" ","",round(pesoTotal,3),"TOTAL"])  
+        tabla.max_width = 25
+        print(tabla)
 
 
 def opcionDos(analyzer,codigo1,codigo2):
