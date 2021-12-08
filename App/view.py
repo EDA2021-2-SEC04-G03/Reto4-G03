@@ -135,7 +135,7 @@ def printDirigido(analyzer,minpq):
         infoiata= m.get(analyzer['aeropuertos'],iata)["value"]
         tabla.add_row([iata,str(infoiata["Name"]),str(infoiata["City"]),
                         str(infoiata["Country"]),grado,salida,entrada])
-    tabla.max_width = 25
+    tabla.max_width = 15
     print(tabla)
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
