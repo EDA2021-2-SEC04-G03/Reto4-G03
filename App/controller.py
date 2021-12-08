@@ -49,16 +49,32 @@ def loadArchivos (analyzer,archivoAeropuertos,archivoCiudades,archivoRutas):
     ciudadesInputFile= csv.DictReader(open(ciudadesFile, encoding="utf-8"),
                                 delimiter=",")
     aeropuertosInputFile= csv.DictReader(open(aeropuertosFile, encoding="utf-8"),
-                                delimiter=",")                          
+                                delimiter=",")    
+    contadorDirigido= 0    
+    ultimoAeDir=None                  
     for aeropuerto in aeropuertosInputFile:
+        ultimoAeDir= aeropuerto
+        if contadorDirigido==0:
+            primerAeDir=aeropuerto
         model.addAeropuerto(analyzer,aeropuerto)
+        contadorDirigido= contadorDirigido +1
     contadorCiudades=0
+    ultimaCiudad=None
     for ciudad in ciudadesInputFile:
+        ultimaCiudad=ciudad
+        if contadorCiudades==0:
+            primeraCiudad= ciudad
         contadorCiudades=contadorCiudades+1
-        model.addCiudad(analyzer,ciudad,contadorCiudades)   
+        model.addCiudad(analyzer,ciudad,contadorCiudades) 
+    contNoDir=0  
+    primerAeNoDir=None
     for vuelo in rutasInputFile:
-        model.addStopConnection(analyzer, vuelo)
-    return analyzer
+        (primerin,contin)= model.addStopConnection(analyzer, vuelo,contNoDir,primerAeNoDir)
+        if primerin!= None:
+            primerAeNoDir= primerin
+            contNoDir= contin
+
+    return (primeraCiudad,ultimaCiudad,primerAeDir,ultimoAeDir,primerAeNoDir)
 #
 # Funciones de ordenamiento
 

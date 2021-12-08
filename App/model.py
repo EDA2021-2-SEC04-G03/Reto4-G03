@@ -25,6 +25,7 @@
  """
 
 
+from DISClib.DataStructures.adjlist import outdegree
 import config as cf
 import sys
 from DISClib.ADT import list as lt
@@ -74,7 +75,7 @@ def newAnalyzer():
     return analyzer
 
 # Funciones para agregar informacion al catalogo
-def addStopConnection(analyzer, vuelo):    
+def addStopConnection(analyzer, vuelo,contNodir,primerAeNoDir):    
     origin = vuelo['Departure']
     destination = vuelo['Destination']
     distancia = float(vuelo['distance_km'])
@@ -83,10 +84,13 @@ def addStopConnection(analyzer, vuelo):
     addStop(analyzer['digrafo conecciones'], destination)
     addConnection(analyzer['digrafo conecciones'], origin, destination, distancia)
     if gr.getEdge(analyzer['digrafo conecciones'],destination,origin)!=None:
+        if contNodir==0 and primerAeNoDir==None:
+            contNodir= contNodir+1
+            primerAeNoDir= m.get(analyzer["aeropuertos"],origin)["value"]
         addStop(analyzer['grafo conecciones'], origin)
         addStop(analyzer['grafo conecciones'], destination)
         addConnection(analyzer['grafo conecciones'], origin, destination, distancia)
-    return analyzer
+    return (primerAeNoDir,contNodir)
 
 def addRouteConnections(analyzer):
     lststops = m.keySet(analyzer['aeropuertos'])
@@ -199,7 +203,7 @@ def cmpCoordenada(latitud1,latitud2):
     """
     if (latitud1 == latitud2):
         return 0
-    elif (latitud1 > latitud2):
+    elif (latitud1 < latitud2):
         return 1
     else:
         return -1 
@@ -214,34 +218,31 @@ def compareroutes(route1, route2):
         return 1
     else:
         return -1
+def cmpGrado(vertice1,vertice2):
+    grado1=vertice1[1]
+    grado2=vertice2[1]
+    return  (grado1 < grado2)
 
 # Funciones Req
 #Req 1
 def interconexionAerea(analyzer):
-    listaVertices = m.keySet(analyzer['aeropuertos'])
-    maxvert = None
-    numInterconectados = 0
-    for i in lt.iterator(listaVertices):
-        vertice = m.get(analyzer['aeropuertos'], i)['value']
-        grado = lt.size(vertice)
-        if(grado > numInterconectados):
-            maxvert = i
-            numInterconectados = grado
-    #info para el digrafo de conecciones
-    listaAeropuertos=gr.adjacents(analyzer["digrafo conecciones"],maxvert)
-    listaDigrafo=lt.newList("ARRAY_LIST")
-    for aeropuerto in lt.iterator(listaAeropuertos):
-        value=m.get(analyzer["aeropuertos"],aeropuerto)["value"]
-        lt.addLast(listaDigrafo,value)
-    #info para el grafo de conecciones
-    listaAeropuertosDirigido=gr.adjacents(analyzer["grafo conecciones"],maxvert)
-    listaGrafo=lt.newList("ARRAY_LIST")
-    for aeropuerto2 in lt.iterator(listaAeropuertosDirigido):
-        value=m.get(analyzer["aeropuertos"],aeropuerto2)["value"]
-        lt.addLast(listaGrafo,value)
-    dicRta={"interconectados":numInterconectados,"lista digrafo":listaDigrafo,"lista grafo":listaGrafo}
-    return dicRta
-
+    listaVerticesDirigido = gr.vertices(analyzer["digrafo conecciones"])
+    minPqDirigido=mpq.newMinPQ(cmpGrado)
+    for vertice in lt.iterator(listaVerticesDirigido):
+        ingrado=gr.indegree(analyzer["digrafo conecciones"],vertice)
+        outgrado= gr.outdegree(analyzer["digrafo conecciones"],vertice)
+        gradoTotal= ingrado+outgrado
+        if gradoTotal> 0:
+            info=[vertice, gradoTotal,ingrado,outgrado]
+            mpq.insert(minPqDirigido,info)
+    listaVerticesNodirigido = gr.vertices(analyzer['grafo conecciones'])
+    minPqNodirigido=mpq.newMinPQ(cmpGrado)
+    for vertice in lt.iterator(listaVerticesNodirigido):
+        grado=gr.degree(analyzer['grafo conecciones'],vertice)
+        info=[vertice,grado]
+        if grado!= 0:
+            mpq.insert(minPqNodirigido,info)
+    return (minPqDirigido,minPqNodirigido)
 
 #Req 2#
 def clusteresTraficoAereo(analyzer, IATA1,IATA2):
@@ -333,10 +334,6 @@ def distanciaAeropuerto(aeropuerto, ciudad):
     distance = R * c
     return distance
 def minimumCostPath(analyzer, initialStation,destStation):
-    """
-    Calcula los caminos de costo mínimo desde la estacion initialStation
-    a todos los demas vertices del grafo
-    """
     paths= djk.Dijkstra(analyzer['digrafo conecciones'], initialStation)
     path = djk.pathTo(paths, destStation)
     return path

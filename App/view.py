@@ -21,6 +21,8 @@
  """
 
 from os import path
+
+import prettytable
 import config as cf
 import sys
 import controller
@@ -29,6 +31,7 @@ from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
 from prettytable import PrettyTable
+from DISClib.ADT import minpq as mpq
 assert cf
 
 
@@ -54,61 +57,86 @@ def printMenu():
 cont=controller.init()
 
 def opcionCero(cont):
-    controller.loadArchivos(cont,archivoAeropuertos,archivoCiudades,archivoRutas)
+    (primeraCiudad,ultimaCiudad,primerAeDir,ultimoAeDir,primerAeNodir)=controller.loadArchivos(cont,archivoAeropuertos,archivoCiudades,archivoRutas)
     aeropuertosNoDirigido= gr.numVertices(cont["grafo conecciones"])
     rutasNoDirigido= gr.numEdges(cont["grafo conecciones"])
     aeropuertosDirigido= gr.numVertices(cont["digrafo conecciones"])
     rutasDirigido= gr.numEdges(cont["digrafo conecciones"])
     ciudades= m.get(cont['ciudades'],"contadorContador")["value"]
-    iataAeDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
-    infoAeDirigido=m.get(cont["aeropuertos"],iataAeDirigido)["value"]
-    iataAeNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
-    infoAeNoDirigido=m.get(cont["aeropuertos"],iataAeNoDirigido)["value"]
-    #TODO
-    ultimaCiudad= lt.getElement((lt.getElement(m.valueSet(cont["ciudades"]),m.size(cont["ciudades"])-1)),1)
-    #prints
     total = PrettyTable() 
     total.field_names = ["Grafo Dirigido","","Grafo No Dirigido"," ","Ciudades", "   "]
-    total.add_row(["Total de aeropuertos",str(aeropuertosDirigido),"Total de aeropuertos",str(aeropuertosNoDirigido),"Total Ciudades",ciudades])
-    total.add_row(["Total de rutas",str(rutasDirigido),"Total de rutas",str(rutasNoDirigido)," "," "])
+    total.add_row(["Total de aeropuertos (vértices)",str(aeropuertosDirigido),"Total de aeropuertos (vértices)",str(aeropuertosNoDirigido),"Total Ciudades",ciudades])
+    total.add_row(["Total de rutas (Edges)",str(rutasDirigido),"Total de rutas (Edges)",str(rutasNoDirigido)," "," "])
     total.max_width = 25
     print(total)
     aeropuertos=PrettyTable() 
-    aeropuertos.field_names = ["Grafo","Nombre", "Ciudad", "País", "Latitud","Longitud"]
-    aeropuertos.add_row(["No Dirigido",str(infoAeNoDirigido["Name"]),str(infoAeNoDirigido["City"]),
-                        str(infoAeNoDirigido["Country"]),str(infoAeNoDirigido["Latitude"]),str(infoAeNoDirigido["Longitude"])])
-    aeropuertos.add_row(["Dirigido",str(infoAeDirigido["Name"]),str(infoAeDirigido["City"]),
-                        str(infoAeDirigido["Country"]),str(infoAeDirigido["Latitude"]),str(infoAeDirigido["Longitude"])])
-    aeropuertos.max_width = 10
-    print("Primeros aeropuertos cargados")
+    aeropuertos.field_names = ["Grafo","Puesto","Nombre", "Ciudad", "País", "Latitud","Longitud"]
+    aeropuertos.add_row(["No Dirigido","Primero",str(primerAeNodir["Name"]),str(primerAeNodir["City"]),
+                        str(primerAeNodir["Country"]),str(round(float(primerAeNodir["Latitude"]),3)),str(round(float(primerAeNodir["Longitude"]),3))])
+    aeropuertos.add_row(["No Dirigido","Ultimo",str(ultimoAeDir["Name"]),str(ultimoAeDir["City"]),
+                        str(ultimoAeDir["Country"]),str(round(float(ultimoAeDir["Latitude"]),3)),str(round(float(ultimoAeDir["Longitude"]),3))])
+    aeropuertos.add_row(["Dirigido","Primero",str(primerAeDir["Name"]),str(primerAeDir["City"]),
+                        str(primerAeDir["Country"]),str(round(float(primerAeDir["Latitude"]),3)),str(round(float(primerAeDir["Longitude"]),3))])
+    aeropuertos.add_row(["Dirigido","Ultimo",str(ultimoAeDir["Name"]),str(ultimoAeDir["City"]),
+                        str(ultimoAeDir["Country"]),str(round(float(ultimoAeDir["Latitude"]),3)),str(round(float(ultimoAeDir["Longitude"]),3))])
+    aeropuertos.max_width = 15
+    print("Primeros y últimos aeropuertos cargados")
     print(aeropuertos)
     ciudad=PrettyTable() 
     ciudad.field_names = ["Nombre Ciudad", "Páis", "latitud", "Longitud", "Población","ID"]
+    ciudad.add_row([str(primeraCiudad["city_ascii"]),str(primeraCiudad["country"]),str(primeraCiudad["lat"]),str(primeraCiudad["lng"]),str(primeraCiudad["population"]),str(primeraCiudad["id"])])
     ciudad.add_row([str(ultimaCiudad["city_ascii"]),str(ultimaCiudad["country"]),str(ultimaCiudad["lat"]),str(ultimaCiudad["lng"]),str(ultimaCiudad["population"]),str(ultimaCiudad["id"])])
     ciudad.max_width = 25
-    print("Ultima Ciudad Cargada")
+    print("Primera y Última Ciudad Cargada")
     print(ciudad)
 
 def opcionUno (analyzer):
-    dict=controller.requerimiento1(analyzer)
-    numInterconectados=dict["interconectados"]
-    digrafo=dict["lista digrafo"]  
-    grafo=dict["grafo"]
-    subListadi=lt.subList(digrafo,1,5)
-    sublistagr=lt.subList(grafo,1,5)
-    print(subListadi)
-    x = PrettyTable() 
-    x.field_names = ["Nombre", "Ciudad","Páis"]
-    for i in lt.iterator(subListadi):
-        x.add_row([str(i,["city_ascii"],["city_ascii"]),str(i["country"])])
-        x.max_width = 25
-    print(x)
-    y = PrettyTable() 
-    y.field_names = ["Nombre", "Ciudad","Páis"]
-    for i in lt.iterator(subListadi):
-        y.add_row([str(i,["city_ascii"],["city_ascii"]),str(i["country"])])
-        y.max_width = 25
-    print(y)
+    (minPqDirigido,minPqNodirigido)=controller.requerimiento1(analyzer)
+    print("==================================")
+    print("Grafo Dirigido")
+    print("==================================")
+    print("Número de aeropuertos interconectados "+ (str(mpq.size(minPqDirigido))))
+    print("Los 5 aeropuertos mas interconectados en la red son:")
+    printDirigido(analyzer,minPqDirigido)
+    print("==================================")
+    print("Grafo No Dirigido")
+    print("==================================")
+    print("Número de aeropuertos interconectados "+ (str(mpq.size(minPqNodirigido))))
+    print("Los 5 aeropuertos mas interconectados en la red son:")
+    printNoDirigido(analyzer,minPqNodirigido)
+
+def printNoDirigido(analyzer,minpq):
+    cont=0
+    tabla= PrettyTable()
+    tabla.field_names = ["IATA","Nombre", "Ciudad", "País","Conexiones"]
+    while cont<5:
+        cont=cont+1
+        info=mpq.delMin(minpq)
+        iata= info[0]
+        grado= info[1]
+        infoiata= m.get(analyzer['aeropuertos'],iata)["value"]
+        
+        tabla.add_row([iata,str(infoiata["Name"]),str(infoiata["City"]),
+                        str(infoiata["Country"]),str(grado)])
+    tabla.max_width = 25
+    print(tabla)
+
+def printDirigido(analyzer,minpq):
+    cont=0
+    tabla= PrettyTable()
+    tabla.field_names = ["IATA","Nombre", "Ciudad", "País","Conexiones Totales","Salida","Entrada"]
+    while cont<5:
+        cont=cont+1
+        info=mpq.delMin(minpq)
+        iata= info[0]
+        grado= info[1]
+        salida= info[3]
+        entrada= info[2]
+        infoiata= m.get(analyzer['aeropuertos'],iata)["value"]
+        tabla.add_row([iata,str(infoiata["Name"]),str(infoiata["City"]),
+                        str(infoiata["Country"]),grado,salida,entrada])
+    tabla.max_width = 25
+    print(tabla)
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
@@ -209,8 +237,9 @@ while True:
         opcionCero(cont)
 
     elif int(inputs[0]) == 1:
-        print("Encontrando puntos de interconexión aérea")
-
+        opcionUno(cont)
+        print("Encontrando puntos de interconexión aérea.............")
+        
     elif int(inputs[0]) == 2:
         codigo1 = input('Ingrese Código IATA del aeropuerto 1: ')
         codigo2= input('Ingrese Código IATA del aeropuerto 2: ')
