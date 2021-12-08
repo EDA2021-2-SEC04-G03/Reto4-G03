@@ -352,21 +352,7 @@ def millasViajero(analyzer,ciudadOrigen,millas):
     listaNodos=lt.newList("ARRAY_LIST")
     while not q.isEmpty(minimo):
         edge=q.dequeue(minimo)
-        lt.addLast(edge,listaNodos)
-    search=dfs.DepthFirstSearch(analyzer["digrafo conecciones"],ciudadOrigen)
-    print(listaNodos)
-    num=None
-    info=None
-    for ae in lt.iterator(listaNodos):
-        if ae!=ciudadOrigen:
-            path=djk.pathTo(search,ae)
-            if num==None:
-                num=lt.size(path)
-                info=path
-            else:
-                if lt.size(path)>num:
-                    num=lt.size(path)
-                    info=path
+        print(edge)
     diferencia=0
     cant=""
     return (diferencia,cant)
@@ -387,3 +373,20 @@ def aeropuertoCerradoDigr(analyzer,iata):
             info=m.get(analyzer["aeropuertos"],ruta["vertexA"])["value"]
             lt.addLast(aeropuertosAfectados,info)
     return(originalVerticesDigr,originalArcosDigr,rutasAfectadas,aeropuertosAfectados)
+
+def aeropuertoCerradogr (analyzer,iata):
+    #grafo
+    originalVerticesgr=gr.vertices(analyzer["grafo conecciones"])
+    originalArcosgr=gr.edges(analyzer["grafo conecciones"])
+    rutasAfectadasgr=0
+    aeropuertosAfectadosgr=lt.newList("ARRAY_LIST")
+    for ruta in lt.iterator(originalArcosgr):
+        if ruta["vertexA"]==iata : 
+            rutasAfectadasgr=rutasAfectadasgr+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexB"])["value"]
+            lt.addLast(aeropuertosAfectadosgr,info)
+        elif ruta["vertexB"]==iata : 
+            rutasAfectadasgr=rutasAfectadasgr+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexA"])["value"]
+            lt.addLast(aeropuertosAfectadosgr,info)
+    return(originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)
