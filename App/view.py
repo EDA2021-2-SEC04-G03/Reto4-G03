@@ -21,6 +21,8 @@
  """
 
 from os import path
+
+import prettytable
 import config as cf
 import sys
 import controller
@@ -90,26 +92,51 @@ def opcionCero(cont):
 
 def opcionUno (analyzer):
     (minPqDirigido,minPqNodirigido)=controller.requerimiento1(analyzer)
-    print("dirigido")
-    print("size "+ (str(mpq.size(minPqDirigido))))
-    print(minPqDirigido)
-    print("Nodirigido")
-    print("size "+ (str(mpq.size(minPqNodirigido))))
-    print(minPqNodirigido)
-    idir=1
-    while idir<5:
-        iata=mpq.delMin(minPqDirigido)
-        print (iata)
-        # ae=m.get(analyzer["aeropuertos"],iata)
-        # print(ae["Name"])
-        idir+=1
-    iNodir=1
-    while iNodir<5:
-        iata=mpq.delMin(minPqNodirigido)
-        print (iata)
-        # ae=m.get(analyzer["aeropuertos"],iata)
-        # print(ae["Name"])
-        iNodir+=1
+    print("==================================")
+    print("Grafo Dirigido")
+    print("==================================")
+    print("Número de aeropuertos interconectados "+ (str(mpq.size(minPqDirigido))))
+    print("Los 5 aeropuertos mas interconectados en la red son:")
+    printDirigido(analyzer,minPqDirigido)
+    print("==================================")
+    print("Grafo No Dirigido")
+    print("==================================")
+    print("Número de aeropuertos interconectados "+ (str(mpq.size(minPqNodirigido))))
+    print("Los 5 aeropuertos mas interconectados en la red son:")
+    printNoDirigido(analyzer,minPqNodirigido)
+
+def printNoDirigido(analyzer,minpq):
+    cont=0
+    tabla= PrettyTable()
+    tabla.field_names = ["IATA","Nombre", "Ciudad", "País","Conexiones"]
+    while cont<5:
+        cont=cont+1
+        info=mpq.delMin(minpq)
+        iata= info[0]
+        grado= info[1]
+        infoiata= m.get(analyzer['aeropuertos'],iata)["value"]
+        
+        tabla.add_row([iata,str(infoiata["Name"]),str(infoiata["City"]),
+                        str(infoiata["Country"]),str(grado)])
+    tabla.max_width = 25
+    print(tabla)
+
+def printDirigido(analyzer,minpq):
+    cont=0
+    tabla= PrettyTable()
+    tabla.field_names = ["IATA","Nombre", "Ciudad", "País","Conexiones Totales","Salida","Entrada"]
+    while cont<5:
+        cont=cont+1
+        info=mpq.delMin(minpq)
+        iata= info[0]
+        grado= info[1]
+        salida= info[3]
+        entrada= info[2]
+        infoiata= m.get(analyzer['aeropuertos'],iata)["value"]
+        tabla.add_row([iata,str(infoiata["Name"]),str(infoiata["City"]),
+                        str(infoiata["Country"]),grado,salida,entrada])
+    tabla.max_width = 25
+    print(tabla)
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
@@ -184,9 +211,8 @@ while True:
 
     elif int(inputs[0]) == 1:
         opcionUno(cont)
-        print("Encontrando puntos de interconexión aérea")
-        print("Lista de aeropuertos (IATA, nombre, ciudad, país)"+
-        "\nNúmero de aeropuertos interconectados.")
+        print("Encontrando puntos de interconexión aérea.............")
+        
     elif int(inputs[0]) == 2:
         codigo1 = input('Ingrese Código IATA del aeropuerto 1: ')
         codigo2= input('Ingrese Código IATA del aeropuerto 2: ')
