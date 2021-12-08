@@ -159,7 +159,39 @@ def printListaCiudades(listaCiudades):
         x.max_width = 25
         cont+=1
     print(x)
-    
+
+def opcionCinco (analyzer,iata):
+    (originalVerticesDigr,originalArcosDigr,rutasAfectadas,aeropuertosAfectados)=controller.aeropuertoCerrado(analyzer,iata)
+    print("---Aeropuertos-Rutas Digrafo---")
+    print("Número original de aeropuetos: "+str(lt.size(originalVerticesDigr)))
+    print("Número original de rutas: "+str(lt.size(originalArcosDigr)))
+    numAe=lt.size(originalVerticesDigr)-1
+    print("Número de aeropuertos resultantes: "+str(numAe))
+    numRutas=lt.size(originalArcosDigr)-rutasAfectadas
+    print("Número de rutas resultantes: "+str(numRutas))
+    if lt.size(aeropuertosAfectados)>=6:
+        primeras=lt.subList(aeropuertosAfectados,1,3)
+        ultimas=lt.subList(aeropuertosAfectados,lt.size(aeropuertosAfectados)-3,3)
+        x = PrettyTable() 
+        x.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(primeras):
+            x.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            x.max_width = 25
+        print(x)
+        a = PrettyTable() 
+        a.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(ultimas):
+            a.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            a.max_width = 25
+        print(a)
+    else:
+        x = PrettyTable() 
+        x.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(aeropuertosAfectados):
+            x.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            x.max_width = 25
+        print(x)
+
 """
 Menu principal
 """
@@ -203,6 +235,7 @@ while True:
     elif int(inputs[0]) == 5:
         codigo = input('Ingrese Código IATA del aeropuerto en cuestion.')
         print("Cuantificando el efecto de un aeropuerto cerrado")
+        opcionCinco(cont,codigo)
         print("Número de vuelos de salida afectados:  "+
         "\nNúmero de vuelos de entrada afectados: "+
         "\nNúmero de ciudades afectadas."+

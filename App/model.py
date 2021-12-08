@@ -25,6 +25,8 @@
  """
 
 
+from App.controller import aeropuertoCerrado
+from DISClib.DataStructures.arraylist import addLast
 import config as cf
 import sys
 from DISClib.ADT import list as lt
@@ -360,3 +362,20 @@ def millasViajero(analyzer,ciudadOrigen,millas):
         diferencia=pesos-millas
         cant="Faltante"
     #falta sacar la rama más larga
+
+def aeropuertoCerradoDigr(analyzer,iata):
+    #digrafo
+    originalVerticesDigr=gr.vertices(analyzer["digrafo conecciones"])
+    originalArcosDigr=gr.edges(analyzer["digrafo conecciones"])
+    rutasAfectadas=0
+    aeropuertosAfectados=lt.newList("ARRAY_LIST")
+    for ruta in lt.iterator(originalArcosDigr):
+        if ruta["vertexA"]==iata : 
+            rutasAfectadas=rutasAfectadas+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexB"])["value"]
+            lt.addLast(aeropuertosAfectados,info)
+        elif ruta["vertexB"]==iata : 
+            rutasAfectadas=rutasAfectadas+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexA"])["value"]
+            lt.addLast(aeropuertosAfectados,info)
+    return(originalVerticesDigr,originalArcosDigr,rutasAfectadas,aeropuertosAfectados)

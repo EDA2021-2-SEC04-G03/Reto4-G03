@@ -71,3 +71,5 @@ def clusteresTraficoAereo(analyzer, IATA1,IATA2):
     return model.clusteresTraficoAereo(analyzer, IATA1,IATA2)
 def requerimiento1 (analyzer):
     return model.interconexionAerea(analyzer)
+def aeropuertoCerrado(analyzer,iata):
+    return model.aeropuertoCerradoDigr(analyzer,iata)
