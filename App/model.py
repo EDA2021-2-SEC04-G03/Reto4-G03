@@ -25,8 +25,6 @@
  """
 
 
-from App.controller import aeropuertoCerrado
-from DISClib.DataStructures.arraylist import addLast
 import config as cf
 import sys
 from DISClib.ADT import list as lt
@@ -36,7 +34,10 @@ from DISClib.ADT import map as m
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import dfs
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim as prim
+from DISClib.ADT import queue as q
 from math import sin, cos, sqrt, atan2, radians,pi
 sys.setrecursionlimit(2**20)
 assert cf
@@ -345,23 +346,30 @@ def minimumCostPath(analyzer, initialStation,destStation):
 
 #Req 4#
 def millasViajero(analyzer,ciudadOrigen,millas):
-    camino=djk.Dijkstra(analyzer["digrafo conecciones"],ciudadOrigen)
-    nodos=gr.numVertices(camino)
-    #se suman todos los pesos y se saca la diferencia con las millas
-    arcos=gr.edges(camino)
-    pesos=0
-    for i in lt.iterator(arcos):
-        pesos+=0
-        #acceder al peso del arco y sumar a la variable
+    caminoMinimo=prim.PrimMST(analyzer["digrafo conecciones"])
+    minimo=caminoMinimo["mst"]
+    print(minimo)
+    listaNodos=lt.newList("ARRAY_LIST")
+    while not q.isEmpty(minimo):
+        edge=q.dequeue(minimo)
+        lt.addLast(edge,listaNodos)
+    search=dfs.DepthFirstSearch(analyzer["digrafo conecciones"],ciudadOrigen)
+    print(listaNodos)
+    num=None
+    info=None
+    for ae in lt.iterator(listaNodos):
+        if ae!=ciudadOrigen:
+            path=djk.pathTo(search,ae)
+            if num==None:
+                num=lt.size(path)
+                info=path
+            else:
+                if lt.size(path)>num:
+                    num=lt.size(path)
+                    info=path
     diferencia=0
-    cant=None
-    if millas>pesos:
-        diferencia=millas-pesos
-        cant="Excedente"
-    else:
-        diferencia=pesos-millas
-        cant="Faltante"
-    #falta sacar la rama más larga
+    cant=""
+    return (diferencia,cant)
 
 def aeropuertoCerradoDigr(analyzer,iata):
     #digrafo

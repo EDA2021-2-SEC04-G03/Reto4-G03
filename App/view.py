@@ -191,6 +191,12 @@ def opcionCinco (analyzer,iata):
             x.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
             x.max_width = 25
         print(x)
+    
+def opcionCuatro (analyzer,origen,millas):
+    (diferencia,cant)=controller.millasViajero(analyzer,origen,millas)
+    print("----")
+    print(cant)
+
 
 """
 Menu principal
@@ -225,8 +231,9 @@ while True:
         "\nRuta (incluir la distancia de viaje [km] de cada segmento de viaje aéreo)."+
         "\nDistancia total de la ruta (incluir la distancia terrestre entre la ciudad de origen y el aeropuerto de origen y entre el aeropuerto destino y la ciudad de destino).")
     elif int(inputs[0]) == 4:
-        ciudad_origen = input('Ingrese la ciudad de origen')
-        cant_millas = input('Ingrese la Cantidad de millas disponibles del viajero.')
+        ciudad_origen = input('Ingrese la ciudad de origen: ')
+        cant_millas = float(input('Ingrese la Cantidad de millas disponibles del viajero: '))
+        opcionCuatro(cont,ciudad_origen,cant_millas)
         print("El número de nodos conectados a la red de expansión mínima."+
         "\nEl costo total (distancia en [km]) de la red de expansión mínima."+
         "\nPresentar la rama más larga (mayor número de arcos entre la raíz y la hoja) que hace partem de la red de expansión mínima."+

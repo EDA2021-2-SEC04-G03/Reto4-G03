@@ -73,3 +73,5 @@ def requerimiento1 (analyzer):
     return model.interconexionAerea(analyzer)
 def aeropuertoCerrado(analyzer,iata):
     return model.aeropuertoCerradoDigr(analyzer,iata)
+def millasViajero(analyzer,ciudadOrigen,millas):
+    return model.millasViajero(analyzer,ciudadOrigen,millas)
