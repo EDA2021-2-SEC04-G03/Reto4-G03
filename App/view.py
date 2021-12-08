@@ -93,12 +93,25 @@ def opcionCero(cont):
 def opcionUno (analyzer):
     (minPqDirigido,minPqNodirigido)=controller.requerimiento1(analyzer)
     print("dirigido")
+    print("size "+ (str(mpq.size(minPqDirigido))))
+    print(minPqDirigido)
+    print("Nodirigido")
+    print("size "+ (str(mpq.size(minPqNodirigido))))
+    print(minPqNodirigido)
     idir=1
     while idir<5:
         iata=mpq.delMin(minPqDirigido)
-        ae=m.get(analyzer["digrafo conecciones"],iata)
-        print(ae["name"])
+        print (iata)
+        # ae=m.get(analyzer["aeropuertos"],iata)
+        # print(ae["Name"])
         idir+=1
+    iNodir=1
+    while iNodir<5:
+        iata=mpq.delMin(minPqNodirigido)
+        print (iata)
+        # ae=m.get(analyzer["aeropuertos"],iata)
+        # print(ae["Name"])
+        iNodir+=1
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
@@ -172,6 +185,7 @@ while True:
         opcionCero(cont)
 
     elif int(inputs[0]) == 1:
+        opcionUno(cont)
         print("Encontrando puntos de interconexión aérea")
         print("Lista de aeropuertos (IATA, nombre, ciudad, país)"+
         "\nNúmero de aeropuertos interconectados.")

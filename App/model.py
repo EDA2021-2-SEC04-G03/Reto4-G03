@@ -25,6 +25,7 @@
  """
 
 
+from DISClib.DataStructures.adjlist import outdegree
 import config as cf
 import sys
 from DISClib.ADT import list as lt
@@ -199,7 +200,7 @@ def cmpCoordenada(latitud1,latitud2):
     """
     if (latitud1 == latitud2):
         return 0
-    elif (latitud1 > latitud2):
+    elif (latitud1 < latitud2):
         return 1
     else:
         return -1 
@@ -214,34 +215,31 @@ def compareroutes(route1, route2):
         return 1
     else:
         return -1
-
-def cmpLista(vertice1,vertice2):
-    grado1=vertice1[0]
-    grado2=vertice2[0]
-    if (grado1 == grado2):
-        return 0
-    elif (grado1 > grado2):
-        return 1
-    else:
-        return -1
+def cmpGrado(vertice1,vertice2):
+    grado1=vertice1[1]
+    grado2=vertice2[1]
+    return  (grado1 < grado2)
 
 # Funciones Req
 #Req 1
 def interconexionAerea(analyzer):
     listaVerticesDirigido = gr.vertices(analyzer["digrafo conecciones"])
-    minPqDirigido=mpq.newMinPQ(cmpLista)
+    minPqDirigido=mpq.newMinPQ(cmpGrado)
     for vertice in lt.iterator(listaVerticesDirigido):
-        grado=gr.degree(analyzer["digrafo conecciones"],vertice)
-        info=[vertice,grado]
-        mpq.insert(minPqDirigido,info)
-    listaVerticesNodirigido = gr.vertices(analyzer["digrafo conecciones"])
-    minPqNodirigido=mpq.newMinPQ(cmpLista)
+        ingrado=gr.indegree(analyzer["digrafo conecciones"],vertice)
+        outgrado= gr.outdegree(analyzer["digrafo conecciones"],vertice)
+        gradoTotal= ingrado+outgrado
+        if gradoTotal> 0:
+            info=[vertice, gradoTotal,ingrado,outgrado]
+            mpq.insert(minPqDirigido,info)
+    listaVerticesNodirigido = gr.vertices(analyzer['grafo conecciones'])
+    minPqNodirigido=mpq.newMinPQ(cmpGrado)
     for vertice in lt.iterator(listaVerticesNodirigido):
-        grado=gr.degree(analyzer["digrafo conecciones"],vertice)
+        grado=gr.degree(analyzer['grafo conecciones'],vertice)
         info=[vertice,grado]
-        mpq.insert(minPqNodirigido,info)
+        if grado!= 0:
+            mpq.insert(minPqNodirigido,info)
     return (minPqDirigido,minPqNodirigido)
-
 
 #Req 2#
 def clusteresTraficoAereo(analyzer, IATA1,IATA2):
@@ -333,10 +331,6 @@ def distanciaAeropuerto(aeropuerto, ciudad):
     distance = R * c
     return distance
 def minimumCostPath(analyzer, initialStation,destStation):
-    """
-    Calcula los caminos de costo mínimo desde la estacion initialStation
-    a todos los demas vertices del grafo
-    """
     paths= djk.Dijkstra(analyzer['digrafo conecciones'], initialStation)
     path = djk.pathTo(paths, destStation)
     return path
@@ -349,10 +343,10 @@ def millasViajero(analyzer,ciudadOrigen,millas):
     arcos=gr.edges(camino)
     pesos=0
     for i in lt.iterator(arcos):
-        pesos+=0
+        pesos=0
         #acceder al peso del arco y sumar a la variable
     diferencia=0
-    cant=None
+    cant=""
     if millas>pesos:
         diferencia=millas-pesos
         cant="Excedente"
