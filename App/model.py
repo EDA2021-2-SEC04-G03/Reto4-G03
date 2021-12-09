@@ -355,10 +355,34 @@ def millasViajero(analyzer,ciudadOrigen,millas):
     listaNodos=lt.newList("ARRAY_LIST")
     while not q.isEmpty(minimo):
         edge=q.dequeue(minimo)
-        print(edge)
-    diferencia=0
-    cant=""
-    return (diferencia,cant)
+        lt.addLast(listaNodos,edge)
+    search=dfs.DepthFirstSearch(analyzer["digrafo conecciones"],ciudadOrigen)
+    num=None
+    costoTotal=0
+    verticeInicial=None
+    for ae in lt.iterator(listaNodos):
+        if ae!=ciudadOrigen:
+            path=djk.pathTo(search,ae)
+            if num==None:
+                num=lt.size(path)
+                info=path
+                verticeInicial=ae
+            else:
+                if lt.size(path)>num:
+                    num=lt.size(path)
+                    info=path
+                    nuevo=ae
+                    peso=gr.getEdge(analyzer["digrafo conecciones"],verticeInicial,nuevo)["weight"]
+                    costoTotal+=peso
+                    verticeInicial=nuevo
+    costoTotalMi=costoTotal/1.60
+    if costoTotalMi>millas:
+        diferencia=costoTotalMi-millas
+        cant="Faltante"
+    else:
+        diferencia=millas-costoTotalMi
+        cant="Excedente"
+    return (listaNodos,costoTotal,info,diferencia,cant)
 #Req5#
 def aeropuertoCerradoDigr(analyzer,iata):
     #digrafo

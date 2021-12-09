@@ -291,13 +291,16 @@ def opcionCinco (analyzer,iata):
         print(y)
 
 def opcionCuatro (analyzer,origen,millas):
-    (diferencia,cant)=controller.millasViajero(analyzer,origen,millas)
+    (listaNodos,costoTotal,info,diferencia,cant)=controller.millasViajero(analyzer,origen,millas)
     print("----")
-    print("El número de nodos conectados a la red de expansión mínima."+
-        "\nEl costo total (distancia en [km]) de la red de expansión mínima."+
-        "\nPresentar la rama más larga (mayor número de arcos entre la raíz y la hoja) que hace partem de la red de expansión mínima."+
-        "\nPresentar la lista de ciudades que se recomienda visitar de acuerdo con la cantidad de millas disponibles por el usuario.")
-    print(cant)
+    print("El número de nodos conectados a la red de expansión mínima es: "+str(lt.size(listaNodos)))
+    print("El costo total en km es de: "+str(costoTotal))
+    print("La rama más larga es : "+str(info))
+    if cant=="Faltante":
+        print("A el pasajero le hace falta "+str(diferencia)+" millas para completar el viaje")
+    else:
+        print(" A el pasajero le sobra "+str(diferencia)+" millas ")
+    
 
 """
 Menu principal
