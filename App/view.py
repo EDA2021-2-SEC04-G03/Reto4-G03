@@ -21,6 +21,8 @@
  """
 
 from os import path
+
+import prettytable
 import config as cf
 import sys
 import controller
@@ -39,8 +41,8 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-archivoAeropuertos = 'airports-utf8-small.csv'
-archivoRutas='routes-utf8-small.csv'
+archivoAeropuertos = 'airports-utf8-large.csv'
+archivoRutas='routes-utf8-large.csv'
 archivoCiudades='worldcities-utf8.csv'
 
 def printMenu():
@@ -64,17 +66,16 @@ def opcionCero(cont):
     iataAeDirigido= lt.getElement(gr.vertices(cont["digrafo conecciones"]),1)
     infoAeDirigido=m.get(cont["aeropuertos"],iataAeDirigido)["value"]
     iataAeNoDirigido= lt.getElement(gr.vertices(cont["grafo conecciones"]),1)
-    infoAeNoDirigido=m.get(cont["aeropuertos"],iataAeNoDirigido)["value"]
-    #TODO
+    infoAeNoDirigido=m.get(cont["aeropuertos"],iataAeNoDirigido)["value"] 
     ultimaCiudad= lt.getElement((lt.getElement(m.valueSet(cont["ciudades"]),m.size(cont["ciudades"])-1)),1)
     #prints
-    total = PrettyTable() 
+    total = PrettyTable()
     total.field_names = ["Grafo Dirigido","","Grafo No Dirigido"," ","Ciudades", "   "]
-    total.add_row(["Total de aeropuertos",str(aeropuertosDirigido),"Total de aeropuertos",str(aeropuertosNoDirigido),"Total Ciudades",ciudades])
-    total.add_row(["Total de rutas",str(rutasDirigido),"Total de rutas",str(rutasNoDirigido)," "," "])
+    total.add_row(["Total de aeropuertos (vértices)",str(aeropuertosDirigido),"Total de aeropuertos (vértices)",str(aeropuertosNoDirigido),"Total Ciudades",ciudades])
+    total.add_row(["Total de rutas (Edges)",str(rutasDirigido),"Total de rutas (Edges)",str(rutasNoDirigido)," "," "])
     total.max_width = 25
-    print(total)
-    aeropuertos=PrettyTable() 
+    print(total) 
+    aeropuertos=PrettyTable()
     aeropuertos.field_names = ["Grafo","Nombre", "Ciudad", "País", "Latitud","Longitud"]
     aeropuertos.add_row(["No Dirigido",str(infoAeNoDirigido["Name"]),str(infoAeNoDirigido["City"]),
                         str(infoAeNoDirigido["Country"]),str(infoAeNoDirigido["Latitude"]),str(infoAeNoDirigido["Longitude"])])
@@ -83,32 +84,99 @@ def opcionCero(cont):
     aeropuertos.max_width = 10
     print("Primeros aeropuertos cargados")
     print(aeropuertos)
-    ciudad=PrettyTable() 
-    ciudad.field_names = ["Nombre Ciudad", "Páis", "latitud", "Longitud", "Población","ID"]
+    ciudad=PrettyTable()
+    ciudad.field_names = ["Nombre Ciudad", "Páis", "latitud", "Longitud", "Población","ID"]   
     ciudad.add_row([str(ultimaCiudad["city_ascii"]),str(ultimaCiudad["country"]),str(ultimaCiudad["lat"]),str(ultimaCiudad["lng"]),str(ultimaCiudad["population"]),str(ultimaCiudad["id"])])
     ciudad.max_width = 25
-    print("Ultima Ciudad Cargada")
+    print("Primera y Última Ciudad Cargada")
     print(ciudad)
 
 def opcionUno (analyzer):
     (minPqDirigido,minPqNodirigido)=controller.requerimiento1(analyzer)
-    print("dirigido")
-    idir=1
-    while idir<5:
-        iata=mpq.delMin(minPqDirigido)
-        ae=m.get(analyzer["digrafo conecciones"],iata)
-        print(ae["name"])
-        idir+=1
+    print("==================================")
+    print("Grafo Dirigido")
+    print("==================================")
+    print("Número de aeropuertos interconectados "+ (str(mpq.size(minPqDirigido))))
+    print("Los 5 aeropuertos mas interconectados en la red son:")
+    printDirigido(analyzer,minPqDirigido)
+    print("==================================")
+    print("Grafo No Dirigido")
+    print("==================================")
+    print("Número de aeropuertos interconectados "+ (str(mpq.size(minPqNodirigido))))
+    print("Los 5 aeropuertos mas interconectados en la red son:")
+    printNoDirigido(analyzer,minPqNodirigido)
+
+def printNoDirigido(analyzer,minpq):
+    cont=0
+    tabla= PrettyTable()
+    tabla.field_names = ["IATA","Nombre", "Ciudad", "País","Conexiones"]
+    while cont<5:
+        cont=cont+1
+        info=mpq.delMin(minpq)
+        iata= info[0]
+        grado= info[1]
+        infoiata= m.get(analyzer['aeropuertos'],iata)["value"]
+        tabla.add_row([iata,str(infoiata["Name"]),str(infoiata["City"]),
+                        str(infoiata["Country"]),str(grado)])
+    tabla.max_width = 25
+    print(tabla)
+
+def printDirigido(analyzer,minpq):
+    cont=0
+    tabla= PrettyTable()
+    tabla.field_names = ["IATA","Nombre", "Ciudad", "País","Conexiones Totales","Salida","Entrada"]
+    while cont<5:
+        cont=cont+1
+        info=mpq.delMin(minpq)
+        iata= info[0]
+        grado= info[1]
+        salida= info[3]
+        entrada= info[2]
+        infoiata= m.get(analyzer['aeropuertos'],iata)["value"]
+        tabla.add_row([iata,str(infoiata["Name"]),str(infoiata["City"]),
+                        str(infoiata["Country"]),grado,salida,entrada])
+    tabla.max_width = 15
+    print(tabla)
 
 def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
     listaOrigen= controller.ciudadesHomonimas(analyzer,ciudadOrigen)
     listaDestino= controller.ciudadesHomonimas(analyzer,ciudadDestino)
     (infoCiudadOrigen,infoCiudadDestino)=viewCiudadesHomonimas(listaOrigen,listaDestino)
     (origen,destino,path)= controller.requerimiento3(analyzer,infoCiudadOrigen,infoCiudadDestino)
-    print(origen)
-    print(destino)
     (disTerrestreOrigen,iataOrigen)=origen
     (disTerrestreDestino,iataDestino)=destino
+    tOrigen=PrettyTable()
+    tOrigen.field_names= ["IATA","Nombre","Ciudad","País"]
+    aeOrigen= m.get(analyzer["aeropuertos"],iataOrigen)["value"]
+    tOrigen.add_row([aeOrigen["IATA"],aeOrigen["Name"],aeOrigen["City"],aeOrigen["Country"]])
+    tDestino=PrettyTable()
+    tDestino.field_names= ["IATA","Nombre","Ciudad","País"]
+    aeDestino= m.get(analyzer["aeropuertos"],iataDestino)["value"]
+    tDestino.add_row([aeDestino["IATA"],aeDestino["Name"],aeDestino["City"],aeDestino["Country"]])
+    tabla= PrettyTable()
+    tabla.field_names=["Origen","Destino","Distancia Km","Tipo de Trayectoria"]
+    tabla.add_row([ciudadOrigen,iataOrigen,round(disTerrestreOrigen,3),"Terrestre"])  
+    pesoTotal= disTerrestreOrigen+disTerrestreDestino
+    print("El aeropuerto de Salida cercano a "+ciudadOrigen+ " es:")
+    tOrigen.max_width = 25
+    print(tOrigen)
+    print("El aeropuerto de llegada cercano a "+ciudadDestino+ " es:")
+    tDestino.max_width = 25
+    print(tDestino)
+    print("Ruta recomendada:")
+    if path== None:
+        print("No se encontró una ruta entre los dos aeropuertos más cercanos a las ciudades indicadas, \nseguramente no se encuentran en el mismo cluster aéreo")
+    else:
+        for trayecto in lt.iterator(path):
+            inicio= trayecto["vertexA"]
+            fin=trayecto["vertexB"]
+            pesoVuelo= trayecto["weight"]
+            tabla.add_row([inicio,fin,pesoVuelo,"Aérea"])  
+            pesoTotal=pesoTotal+pesoVuelo
+        tabla.add_row([ciudadDestino,iataDestino,round(disTerrestreDestino,3),"Terrestre"])  
+        tabla.add_row([" ","",round(pesoTotal,3),"TOTAL"])  
+        tabla.max_width = 25
+        print(tabla)
 
 
 def opcionDos(analyzer,codigo1,codigo2):
@@ -240,26 +308,22 @@ while True:
         opcionCero(cont)
 
     elif int(inputs[0]) == 1:
-        print("Encontrando puntos de interconexión aérea")
-        print("Lista de aeropuertos (IATA, nombre, ciudad, país)"+
-        "\nNúmero de aeropuertos interconectados.")
+        opcionUno(cont)
+        print("Encontrando puntos de interconexión aérea.............")
+        
     elif int(inputs[0]) == 2:
         codigo1 = input('Ingrese Código IATA del aeropuerto 1: ')
         codigo2= input('Ingrese Código IATA del aeropuerto 2: ')
         print("Encontrando clústeres de tráfico aéreo")
         print("------------------------------------------------------------------------------")
-        print("______________________________________________________________________________")
         opcionDos(cont,codigo1,codigo2)
 
     elif int(inputs[0]) == 3:
         ciudadOrigen = input('Ingrese la ciudad de origen: ')
         ciudadDestino = input('Ingrese la ciudad de destino: ')
-        opcionTres(cont,ciudadOrigen,ciudadDestino)
         print("Encontrando la ruta más corta entre las ciudades")
-        print("Aeropuerto de Origen"+
-        "\nAeropuerto de Destino."+
-        "\nRuta (incluir la distancia de viaje [km] de cada segmento de viaje aéreo)."+
-        "\nDistancia total de la ruta (incluir la distancia terrestre entre la ciudad de origen y el aeropuerto de origen y entre el aeropuerto destino y la ciudad de destino).")
+        print("------------------------------------------------------------------------------")
+        opcionTres(cont,ciudadOrigen,ciudadDestino)
     elif int(inputs[0]) == 4:
         ciudad_origen = input('Ingrese la ciudad de origen: ')
         cant_millas = float(input('Ingrese la Cantidad de millas disponibles del viajero: '))
