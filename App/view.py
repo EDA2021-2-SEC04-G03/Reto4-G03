@@ -41,8 +41,8 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-archivoAeropuertos = 'airports-utf8-large.csv'
-archivoRutas='routes-utf8-large.csv'
+archivoAeropuertos = 'airports-utf8-small.csv'
+archivoRutas='routes-utf8-small.csv'
 archivoCiudades='worldcities-utf8.csv'
 
 def printMenu():
@@ -293,6 +293,10 @@ def opcionCinco (analyzer,iata):
 def opcionCuatro (analyzer,origen,millas):
     (diferencia,cant)=controller.millasViajero(analyzer,origen,millas)
     print("----")
+    print("El número de nodos conectados a la red de expansión mínima."+
+        "\nEl costo total (distancia en [km]) de la red de expansión mínima."+
+        "\nPresentar la rama más larga (mayor número de arcos entre la raíz y la hoja) que hace partem de la red de expansión mínima."+
+        "\nPresentar la lista de ciudades que se recomienda visitar de acuerdo con la cantidad de millas disponibles por el usuario.")
     print(cant)
 
 """
@@ -324,13 +328,10 @@ while True:
         print("------------------------------------------------------------------------------")
         opcionTres(cont,ciudadOrigen,ciudadDestino)
     elif int(inputs[0]) == 4:
-        ciudad_origen = input('Ingrese la ciudad de origen: ')
+        ciudad_origen = input('Ingrese IATA de origen: ')
         cant_millas = float(input('Ingrese la Cantidad de millas disponibles del viajero: '))
         opcionCuatro(cont,ciudad_origen,cant_millas)
-        print("El número de nodos conectados a la red de expansión mínima."+
-        "\nEl costo total (distancia en [km]) de la red de expansión mínima."+
-        "\nPresentar la rama más larga (mayor número de arcos entre la raíz y la hoja) que hace partem de la red de expansión mínima."+
-        "\nPresentar la lista de ciudades que se recomienda visitar de acuerdo con la cantidad de millas disponibles por el usuario.")
+        
 
     elif int(inputs[0]) == 5:
         codigo = input('Ingrese Código IATA del aeropuerto en cuestion.')

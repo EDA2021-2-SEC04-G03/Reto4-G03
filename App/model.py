@@ -348,7 +348,8 @@ def minimumCostPath(analyzer, initialStation,destStation):
 
 #Req 4#
 def millasViajero(analyzer,ciudadOrigen,millas):
-    caminoMinimo=prim.PrimMST(analyzer["digrafo conecciones"])
+    grafo=analyzer["digrafo conecciones"]
+    caminoMinimo=prim.PrimMST(grafo)
     minimo=caminoMinimo["mst"]
     print(minimo)
     listaNodos=lt.newList("ARRAY_LIST")
