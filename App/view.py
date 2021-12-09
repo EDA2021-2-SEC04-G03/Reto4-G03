@@ -289,12 +289,11 @@ def opcionCinco (analyzer,iata):
             y.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
             y.max_width = 25
         print(y)
-    
+
 def opcionCuatro (analyzer,origen,millas):
     (diferencia,cant)=controller.millasViajero(analyzer,origen,millas)
     print("----")
     print(cant)
-
 
 """
 Menu principal
