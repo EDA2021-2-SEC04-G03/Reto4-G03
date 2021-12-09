@@ -34,7 +34,10 @@ from DISClib.ADT import map as m
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import dfs
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim as prim
+from DISClib.ADT import queue as q
 from math import sin, cos, sqrt, atan2, radians,pi
 sys.setrecursionlimit(2**20)
 assert cf
@@ -345,20 +348,48 @@ def minimumCostPath(analyzer, initialStation,destStation):
 
 #Req 4#
 def millasViajero(analyzer,ciudadOrigen,millas):
-    camino=djk.Dijkstra(analyzer["digrafo conecciones"],ciudadOrigen)
-    nodos=gr.numVertices(camino)
-    #se suman todos los pesos y se saca la diferencia con las millas
-    arcos=gr.edges(camino)
-    pesos=0
-    for i in lt.iterator(arcos):
-        pesos=0
-        #acceder al peso del arco y sumar a la variable
+    caminoMinimo=prim.PrimMST(analyzer["digrafo conecciones"])
+    minimo=caminoMinimo["mst"]
+    print(minimo)
+    listaNodos=lt.newList("ARRAY_LIST")
+    while not q.isEmpty(minimo):
+        edge=q.dequeue(minimo)
+        print(edge)
     diferencia=0
     cant=""
-    if millas>pesos:
-        diferencia=millas-pesos
-        cant="Excedente"
-    else:
-        diferencia=pesos-millas
-        cant="Faltante"
-    #falta sacar la rama más larga
+    return (diferencia,cant)
+#Req5#
+def aeropuertoCerradoDigr(analyzer,iata):
+    #digrafo
+    originalVerticesDigr=gr.vertices(analyzer["digrafo conecciones"])
+    originalArcosDigr=gr.edges(analyzer["digrafo conecciones"])
+    rutasAfectadas=0
+    aeropuertosAfectados=lt.newList("ARRAY_LIST")
+    for ruta in lt.iterator(originalArcosDigr):
+        if ruta["vertexA"]==iata : 
+            rutasAfectadas=rutasAfectadas+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexB"])["value"]
+            lt.addLast(aeropuertosAfectados,info)
+        elif ruta["vertexB"]==iata : 
+            rutasAfectadas=rutasAfectadas+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexA"])["value"]
+            lt.addLast(aeropuertosAfectados,info)
+    return(originalVerticesDigr,originalArcosDigr,rutasAfectadas,aeropuertosAfectados)
+
+def aeropuertoCerradogr (analyzer,iata):
+    #grafo
+    originalVerticesgr=gr.vertices(analyzer["grafo conecciones"])
+    originalArcosgr=gr.edges(analyzer["grafo conecciones"])
+    rutasAfectadasgr=0
+    aeropuertosAfectadosgr=lt.newList("ARRAY_LIST")
+    for ruta in lt.iterator(originalArcosgr):
+        if ruta["vertexA"]==iata : 
+            rutasAfectadasgr=rutasAfectadasgr+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexB"])["value"]
+            lt.addLast(aeropuertosAfectadosgr,info)
+        elif ruta["vertexB"]==iata : 
+            rutasAfectadasgr=rutasAfectadasgr+1
+            info=m.get(analyzer["aeropuertos"],ruta["vertexA"])["value"]
+            lt.addLast(aeropuertosAfectadosgr,info)
+    return(originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)
+

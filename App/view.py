@@ -227,6 +227,7 @@ def printListaCiudades(listaCiudades):
         x.max_width = 25
         cont+=1
     print(x)
+
 def opcionCinco (analyzer,iata):
     (originalVerticesDigr,originalArcosDigr,rutasAfectadas,aeropuertosAfectados)=controller.aeropuertoCerradoDigr(analyzer,iata)
     print("---Aeropuertos-Rutas Digrafo---")
@@ -288,12 +289,12 @@ def opcionCinco (analyzer,iata):
             y.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
             y.max_width = 25
         print(y)
-    
+
 def opcionCuatro (analyzer,origen,millas):
     (diferencia,cant)=controller.millasViajero(analyzer,origen,millas)
     print("----")
     print(cant)
-    
+
 """
 Menu principal
 """
@@ -323,8 +324,9 @@ while True:
         print("------------------------------------------------------------------------------")
         opcionTres(cont,ciudadOrigen,ciudadDestino)
     elif int(inputs[0]) == 4:
-        ciudad_origen = input('Ingrese la ciudad de origen')
-        cant_millas = input('Ingrese la Cantidad de millas disponibles del viajero.')
+        ciudad_origen = input('Ingrese la ciudad de origen: ')
+        cant_millas = float(input('Ingrese la Cantidad de millas disponibles del viajero: '))
+        opcionCuatro(cont,ciudad_origen,cant_millas)
         print("El número de nodos conectados a la red de expansión mínima."+
         "\nEl costo total (distancia en [km]) de la red de expansión mínima."+
         "\nPresentar la rama más larga (mayor número de arcos entre la raíz y la hoja) que hace partem de la red de expansión mínima."+
@@ -333,6 +335,7 @@ while True:
     elif int(inputs[0]) == 5:
         codigo = input('Ingrese Código IATA del aeropuerto en cuestion.')
         print("Cuantificando el efecto de un aeropuerto cerrado")
+        opcionCinco(cont,codigo)
         print("Número de vuelos de salida afectados:  "+
         "\nNúmero de vuelos de entrada afectados: "+
         "\nNúmero de ciudades afectadas."+
