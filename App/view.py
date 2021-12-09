@@ -173,7 +173,7 @@ def opcionTres(analyzer,ciudadOrigen,ciudadDestino):
             pesoVuelo= trayecto["weight"]
             tabla.add_row([inicio,fin,pesoVuelo,"Aérea"])  
             pesoTotal=pesoTotal+pesoVuelo
-        tabla.add_row([ciudadDestino,iataDestino,round(disTerrestreDestino,3),"Terrestre"])  
+        tabla.add_row([iataDestino,ciudadDestino,round(disTerrestreDestino,3),"Terrestre"])  
         tabla.add_row([" ","",round(pesoTotal,3),"TOTAL"])  
         tabla.max_width = 25
         print(tabla)
@@ -333,10 +333,7 @@ while True:
     elif int(inputs[0]) == 5:
         codigo = input('Ingrese Código IATA del aeropuerto en cuestion.')
         print("Cuantificando el efecto de un aeropuerto cerrado")
-        print("Número de vuelos de salida afectados:  "+
-        "\nNúmero de vuelos de entrada afectados: "+
-        "\nNúmero de ciudades afectadas."+
-        "\n• Lista de ciudades afectadas") 
+        opcionCinco(cont,codigo) 
     else:
         sys.exit(0)
 
