@@ -41,8 +41,8 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-archivoAeropuertos = 'airports-utf8-small.csv'
-archivoRutas='routes-utf8-small.csv'
+archivoAeropuertos = 'airports-utf8-large.csv'
+archivoRutas='routes-utf8-large.csv'
 archivoCiudades='worldcities-utf8.csv'
 
 def printMenu():
@@ -259,9 +259,9 @@ def opcionCinco (analyzer,iata):
             x.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
             x.max_width = 25
         print(x)
-    (originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)=controller.aeropuertoCerradoGr(analyzer,iata)
+    (num,originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)=controller.aeropuertoCerradoGr(analyzer,iata)
     print("---Aeropuetos-Rutas Grafo---")
-    print("Número original de aeropuetos: "+str(lt.size(originalVerticesgr)))
+    print("Número original de aeropuetos: "+str(num))
     print("Número original de rutas: "+str(lt.size(originalArcosgr)))
     numAe=lt.size(originalVerticesgr)-1
     print("Número de aeropuertos resultantes: "+str(numAe))

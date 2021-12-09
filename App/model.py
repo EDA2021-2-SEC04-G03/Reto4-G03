@@ -351,12 +351,12 @@ def millasViajero(analyzer,ciudadOrigen,millas):
     grafo=analyzer["digrafo conecciones"]
     caminoMinimo=prim.PrimMST(grafo)
     minimo=caminoMinimo["mst"]
-    print(minimo)
     listaNodos=lt.newList("ARRAY_LIST")
     while not q.isEmpty(minimo):
         edge=q.dequeue(minimo)
         lt.addLast(listaNodos,edge)
     search=dfs.DepthFirstSearch(analyzer["digrafo conecciones"],ciudadOrigen)
+    info=None
     num=None
     costoTotal=0
     verticeInicial=None
@@ -405,6 +405,7 @@ def aeropuertoCerradogr(analyzer,iata):
     #grafo
     originalVerticesgr=gr.vertices(analyzer["grafo conecciones"])
     originalArcosgr=gr.edges(analyzer["grafo conecciones"])
+    num=gr.numEdges(analyzer["grafo conecciones"])
     rutasAfectadasgr=0
     aeropuertosAfectadosgr=lt.newList("ARRAY_LIST")
     for ruta in lt.iterator(originalArcosgr):
@@ -416,5 +417,4 @@ def aeropuertoCerradogr(analyzer,iata):
             rutasAfectadasgr=rutasAfectadasgr+1
             info=m.get(analyzer["aeropuertos"],ruta["vertexA"])["value"]
             lt.addLast(aeropuertosAfectadosgr,info)
-    return(originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)
-
+    return(num,originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)
