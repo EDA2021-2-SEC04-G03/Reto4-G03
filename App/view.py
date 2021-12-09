@@ -227,6 +227,72 @@ def printListaCiudades(listaCiudades):
         x.max_width = 25
         cont+=1
     print(x)
+def opcionCinco (analyzer,iata):
+    (originalVerticesDigr,originalArcosDigr,rutasAfectadas,aeropuertosAfectados)=controller.aeropuertoCerradoDigr(analyzer,iata)
+    print("---Aeropuertos-Rutas Digrafo---")
+    print("Número original de aeropuetos: "+str(lt.size(originalVerticesDigr)))
+    print("Número original de rutas: "+str(lt.size(originalArcosDigr)))
+    numAe=lt.size(originalVerticesDigr)-1
+    print("Número de aeropuertos resultantes: "+str(numAe))
+    numRutas=lt.size(originalArcosDigr)-rutasAfectadas
+    print("Número de rutas resultantes: "+str(numRutas))
+    if lt.size(aeropuertosAfectados)>=6:
+        primeras=lt.subList(aeropuertosAfectados,1,3)
+        ultimas=lt.subList(aeropuertosAfectados,lt.size(aeropuertosAfectados)-3,3)
+        x = PrettyTable() 
+        x.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(primeras):
+            x.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            x.max_width = 25
+        print(x)
+        a = PrettyTable() 
+        a.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(ultimas):
+            a.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            a.max_width = 25
+        print(a)
+    else:
+        x = PrettyTable() 
+        x.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(aeropuertosAfectados):
+            x.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            x.max_width = 25
+        print(x)
+    (originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)=controller.aeropuertoCerradoGr(analyzer,iata)
+    print("---Aeropuetos-Rutas Grafo---")
+    print("Número original de aeropuetos: "+str(lt.size(originalVerticesgr)))
+    print("Número original de rutas: "+str(lt.size(originalArcosgr)))
+    numAe=lt.size(originalVerticesgr)-1
+    print("Número de aeropuertos resultantes: "+str(numAe))
+    numRutas=lt.size(originalArcosgr)-rutasAfectadasgr
+    print("Número de rutas resultantes: "+str(numRutas))
+    if lt.size(aeropuertosAfectadosgr)>=6:
+        primeras=lt.subList(aeropuertosAfectadosgr,1,3)
+        ultimas=lt.subList(aeropuertosAfectadosgr,lt.size(aeropuertosAfectadosgr)-3,3)
+        y = PrettyTable() 
+        y.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(primeras):
+            y.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            y.max_width = 25
+        print(y)
+        b = PrettyTable() 
+        b.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(ultimas):
+            b.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            b.max_width = 25
+        print(b)
+    else:
+        y = PrettyTable() 
+        y.field_names = ["IATA","Name", "Ciudad", "País"]
+        for i in lt.iterator(aeropuertosAfectadosgr):
+            y.add_row([str(i["IATA"]),str(i["Name"]),str(i["City"]),str(i["Country"])])
+            y.max_width = 25
+        print(y)
+    
+def opcionCuatro (analyzer,origen,millas):
+    (diferencia,cant)=controller.millasViajero(analyzer,origen,millas)
+    print("----")
+    print(cant)
     
 """
 Menu principal
