@@ -34,7 +34,10 @@ from DISClib.ADT import map as m
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import dfs
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim as prim
+from DISClib.ADT import queue as q
 from math import sin, cos, sqrt, atan2, radians,pi
 sys.setrecursionlimit(2**20)
 assert cf
@@ -355,7 +358,7 @@ def millasViajero(analyzer,ciudadOrigen,millas):
     diferencia=0
     cant=""
     return (diferencia,cant)
-
+#Req5#
 def aeropuertoCerradoDigr(analyzer,iata):
     #digrafo
     originalVerticesDigr=gr.vertices(analyzer["digrafo conecciones"])
@@ -389,3 +392,4 @@ def aeropuertoCerradogr(analyzer,iata):
             info=m.get(analyzer["aeropuertos"],ruta["vertexA"])["value"]
             lt.addLast(aeropuertosAfectadosgr,info)
     return(originalVerticesgr,originalArcosgr,rutasAfectadasgr,aeropuertosAfectadosgr)
+
